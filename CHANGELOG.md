@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.1](https://github.com/geertmeersman/print-color-test/tree/v0.1.1) (2025-06-04)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.0...v0.1.1)
+
+**Merged pull requests:**
+
+- fix: add timeout to telegram post [\#4](https://github.com/geertmeersman/print-color-test/pull/4) ([geertmeersman](https://github.com/geertmeersman))
+- docs: badges [\#3](https://github.com/geertmeersman/print-color-test/pull/3) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.1.0](https://github.com/geertmeersman/print-color-test/tree/v0.1.0) (2025-06-04)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/01a7ad5c182ca905fe20829249b199816b48b1d7...v0.1.0)
