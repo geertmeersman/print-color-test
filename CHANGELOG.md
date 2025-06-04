@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.2](https://github.com/geertmeersman/print-color-test/tree/v0.1.2) (2025-06-04)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.1...v0.1.2)
+
+**Merged pull requests:**
+
+- fix: cups conf ServerAlias \* [\#5](https://github.com/geertmeersman/print-color-test/pull/5) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.1.1](https://github.com/geertmeersman/print-color-test/tree/v0.1.1) (2025-06-04)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.0...v0.1.1)
