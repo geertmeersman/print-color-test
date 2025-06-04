@@ -1,7 +1,7 @@
 
 [![maintainer](https://img.shields.io/badge/maintainer-Geert%20Meersman-green?style=for-the-badge&logo=github)](https://github.com/geertmeersman)
 [![buyme_coffee](https://img.shields.io/badge/Buy%20me%20an%20Omer-donate-yellow?style=for-the-badge&logo=buymeacoffee)](https://www.buymeacoffee.com/geertmeersman)
-[![MIT License](https://img.shields.io/github/license/geertmeersman/print-color-test?style=for-the-badge)](https://github.com/geertmeersman/print-color-test/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/github/license/geertmeersman/print-color-test?style=for-the-badge)](https://github.com/geertmeersman/print-color-test/blob/main/LICENSE)
 
 [![GitHub issues](https://img.shields.io/github/issues/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/issues)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/geertmeersman/print-color-test.svg)](http://isitmaintained.com/project/geertmeersman/print-color-test)
