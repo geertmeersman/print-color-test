@@ -56,7 +56,7 @@ if TELEGRAM_BOT_ID:
             "chat_id": TELEGRAM_CHAT_ID,
             "parse_mode": "Markdown"
         }
-        response = requests.post(TELEGRAM_WEBHOOK, json=payload)
+        response = requests.post(TELEGRAM_WEBHOOK, json=payload, timeout=10)
         if response.status_code != 200:
             raise Exception(response.text)
         print("[INFO] Telegram message sent.")
