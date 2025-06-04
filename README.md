@@ -1,6 +1,19 @@
 
 [![maintainer](https://img.shields.io/badge/maintainer-Geert%20Meersman-green?style=for-the-badge&logo=github)](https://github.com/geertmeersman)
 [![buyme_coffee](https://img.shields.io/badge/Buy%20me%20an%20Omer-donate-yellow?style=for-the-badge&logo=buymeacoffee)](https://www.buymeacoffee.com/geertmeersman)
+[![MIT License](https://img.shields.io/github/license/geertmeersman/print-color-test?style=for-the-badge)](https://github.com/geertmeersman/print-color-test/blob/master/LICENSE)
+
+[![GitHub issues](https://img.shields.io/github/issues/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/issues)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/geertmeersman/print-color-test.svg)](http://isitmaintained.com/project/geertmeersman/print-color-test)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/geertmeersman/print-color-test.svg)](http://isitmaintained.com/project/geertmeersman/print-color-test)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/geertmeersman/print-color-test/pulls)
+
+[![github release](https://img.shields.io/github/v/release/geertmeersman/print-color-test?logo=github)](https://github.com/geertmeersman/print-color-test/releases)
+[![github release date](https://img.shields.io/github/release-date/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/releases)
+[![github last-commit](https://img.shields.io/github/last-commit/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/commits)
+[![github contributors](https://img.shields.io/github/contributors/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/graphs/contributors)
+[![github commit activity](https://img.shields.io/github/commit-activity/y/geertmeersman/print-color-test?logo=github)](https://github.com/geertmeersman/print-color-test/commits/main)
+
 
 # 🖨️ Print Color Test Docker Container
 
