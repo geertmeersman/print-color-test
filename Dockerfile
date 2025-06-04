@@ -42,5 +42,8 @@ RUN crontab /etc/cron.d/color-printer  # Register cron job
 # Copy custom CUPS configuration
 COPY conf/cupsd.conf /etc/cups/cupsd.conf
 
+# Copy VERSION
+COPY VERSION /VERSION
+
 # Use custom entrypoint to start CUPS and cron
 ENTRYPOINT ["/entrypoint.sh"]
