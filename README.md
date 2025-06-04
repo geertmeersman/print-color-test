@@ -14,6 +14,9 @@
 [![github contributors](https://img.shields.io/github/contributors/geertmeersman/print-color-test)](https://github.com/geertmeersman/print-color-test/graphs/contributors)
 [![github commit activity](https://img.shields.io/github/commit-activity/y/geertmeersman/print-color-test?logo=github)](https://github.com/geertmeersman/print-color-test/commits/main)
 
+![Docker Pulls](https://img.shields.io/docker/pulls/geertmeersman/print-color-test)
+![Docker Image Version](https://img.shields.io/docker/v/geertmeersman/print-color-test?label=docker%20image%20version)
+
 
 # 🖨️ Print Color Test Docker Container
 

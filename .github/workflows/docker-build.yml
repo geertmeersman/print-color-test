@@ -73,4 +73,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: geertmeersman/print-color-test:latest
+          tags: |
+            geertmeersman/print-color-test:latest
+            geertmeersman/print-color-test:${{ steps.release_drafter.outputs.tag_name }}
