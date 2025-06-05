@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.3](https://github.com/geertmeersman/print-color-test/tree/v0.1.3) (2025-06-05)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.2...v0.1.3)
+
+**Merged pull requests:**
+
+- chore: Updated access control settings to explicitly allow all operations under the default policy [\#6](https://github.com/geertmeersman/print-color-test/pull/6) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.1.2](https://github.com/geertmeersman/print-color-test/tree/v0.1.2) (2025-06-04)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.1...v0.1.2)
