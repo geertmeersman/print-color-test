@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.4](https://github.com/geertmeersman/print-color-test/tree/v0.1.4) (2025-06-05)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.3...v0.1.4)
+
+**Merged pull requests:**
+
+- docs: Added a Docker Compose configuration file for easy setup [\#7](https://github.com/geertmeersman/print-color-test/pull/7) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.1.3](https://github.com/geertmeersman/print-color-test/tree/v0.1.3) (2025-06-05)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.2...v0.1.3)
