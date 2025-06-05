@@ -11,7 +11,7 @@ sleep 3
 cron
 
 # Add the printer (overwrite if exists)
-lpadmin -p "MyPrinter" -v "$PRINTER_URI" -m everywhere -E
+lpadmin -p "MyPrinter" -v "$PRINTER_URI" -D "$PRINTER_NAME" -m everywhere -E
 lpadmin -d "MyPrinter"
 
 # Optional: keep container running to troubleshoot, or exit
