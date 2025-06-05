@@ -37,6 +37,19 @@ Ideal for inkjet printer owners who **don't print frequently** but want to **avo
 
 ---
 
+## 📦 Docker Image
+
+You can pull the image directly from Docker Hub:
+
+```bash
+docker pull geertmeersman/print-color-test
+```
+
+Or visit the repository directly:  
+🔗 [https://hub.docker.com/r/geertmeersman/print-color-test](https://hub.docker.com/r/geertmeersman/print-color-test)
+
+---
+
 ## ⚙️ Environment Variables
 
 | Variable            | Description                                                                 |
@@ -75,7 +88,8 @@ version: '3.8'
 
 services:
   print-color-test:
-    image: print-color-test
+    image: geertmeersman/print-color-test
+    container_name: print-color-test
     environment:
       PRINTER_URI: ipp://10.0.0.24:631/ipp/print
       PRINTER_NAME: Canon GX7050
