@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.2](https://github.com/geertmeersman/print-color-test/tree/v0.2.2) (2025-06-06)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.1...v0.2.2)
+
+**Merged pull requests:**
+
+- chore: Improved log output in docker logs [\#12](https://github.com/geertmeersman/print-color-test/pull/12) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.2.1](https://github.com/geertmeersman/print-color-test/tree/v0.2.1) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.0...v0.2.1)
