@@ -8,7 +8,7 @@ FROM python:3.11-slim
 # - ghostscript: required for PDF processing
 # Also install Python dependencies: reportlab (for PDF generation), requests (for notifications)
 RUN apt-get update && \
-    apt-get install -y cron tzdata cups cups-client ghostscript vim-tiny && \
+    apt-get install -y cron tzdata cups cups-client ghostscript vim-tiny curl && \
     pip install reportlab requests && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -44,6 +44,12 @@ COPY conf/cupsd.conf /etc/cups/cupsd.conf
 
 # Copy VERSION
 COPY VERSION /VERSION
+
+# Healthcheck
+COPY scripts/healthcheck.sh /healthcheck.sh
+RUN chmod +x /healthcheck.sh
+
+HEALTHCHECK CMD /healthcheck.sh
 
 # Use custom entrypoint to start CUPS and cron
 ENTRYPOINT ["/entrypoint.sh"]
