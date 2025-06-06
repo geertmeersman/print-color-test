@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.1](https://github.com/geertmeersman/print-color-test/tree/v0.2.1) (2025-06-06)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.0...v0.2.1)
+
+**Merged pull requests:**
+
+- chore: improved workflows [\#11](https://github.com/geertmeersman/print-color-test/pull/11) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.2.0](https://github.com/geertmeersman/print-color-test/tree/v0.2.0) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.6...v0.2.0)
