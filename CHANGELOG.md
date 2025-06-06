@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.6](https://github.com/geertmeersman/print-color-test/tree/v0.1.6) (2025-06-06)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.5...v0.1.6)
+
+**Merged pull requests:**
+
+- fix: environment variables cron fix [\#9](https://github.com/geertmeersman/print-color-test/pull/9) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.1.5](https://github.com/geertmeersman/print-color-test/tree/v0.1.5) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.1.4...v0.1.5)
