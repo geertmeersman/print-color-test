@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.3](https://github.com/geertmeersman/print-color-test/tree/v0.2.3) (2025-06-06)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.2...v0.2.3)
+
+**Merged pull requests:**
+
+- chore: Added automatic human-readable descriptions of scheduled cron jobs at startup [\#13](https://github.com/geertmeersman/print-color-test/pull/13) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.2.2](https://github.com/geertmeersman/print-color-test/tree/v0.2.2) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.1...v0.2.2)
