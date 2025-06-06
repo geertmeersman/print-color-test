@@ -8,7 +8,7 @@ FROM python:3.11-slim
 # - ghostscript: required for PDF processing
 # Also install Python dependencies: reportlab (for PDF generation), requests (for notifications)
 RUN apt-get update && \
-    apt-get install -y cron tzdata cups cups-client ghostscript && \
+    apt-get install -y cron tzdata cups cups-client ghostscript vim-tiny && \
     pip install reportlab requests && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
