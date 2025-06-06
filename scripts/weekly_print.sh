@@ -2,6 +2,9 @@
 
 echo "[INFO] Running weekly print job at $(date)"
 
+# Source env vars for cron
+[ -f /env.sh ] && source /env.sh
+
 # Generate PDF
 python3 /home/generate_pdf.py
 
