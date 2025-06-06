@@ -16,7 +16,7 @@
 from cron_descriptor import get_description
 import re
 
-print("📆 Scheduled Cron Jobs:")
+print("📆   Scheduled Cron Jobs:\n")
 
 with open("/etc/cron.d/color-printer", "r") as file:
     for line in file:
@@ -33,8 +33,8 @@ with open("/etc/cron.d/color-printer", "r") as file:
             cron_expr = match.group(1)
             try:
                 human = get_description(cron_expr)
-                print(f"🕒 {cron_expr} → {human}")
+                print(f"🕒   {cron_expr} → {human}")
             except Exception as e:
-                print(f"⚠️ Failed to parse: {cron_expr} ({e})")
+                print(f"⚠️   Failed to parse: {cron_expr} ({e})")
         else:
-            print(f"⚠️ Skipped non-cron line: {line}")
+            print(f"⚠️   Skipped non-cron line: {line}")
