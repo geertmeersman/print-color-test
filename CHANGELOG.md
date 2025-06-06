@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.4](https://github.com/geertmeersman/print-color-test/tree/v0.2.4) (2025-06-06)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.3...v0.2.4)
+
+**Merged pull requests:**
+
+- fix: describe cron leading spaces fix [\#14](https://github.com/geertmeersman/print-color-test/pull/14) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v0.2.3](https://github.com/geertmeersman/print-color-test/tree/v0.2.3) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.2...v0.2.3)
