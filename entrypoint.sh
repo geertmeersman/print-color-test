@@ -46,8 +46,8 @@ sleep 3
 # Start cron
 log "[INFO] Starting cron..."
 cron
-log "[INFO] Crontab listing..."
-crontab -l
+log "[INFO] Describing cron jobs..."
+python3 /home/describe_cron.py
 
 # Add the printer (overwrite if exists)
 log "[INFO] Adding printer $PRINTER_NAME ($PRINTER_URI)..."

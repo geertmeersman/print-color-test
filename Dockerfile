@@ -9,13 +9,14 @@ FROM python:3.11-slim
 # Also install Python dependencies: reportlab (for PDF generation), requests (for notifications)
 RUN apt-get update && \
     apt-get install -y cron tzdata cups cups-client ghostscript vim-tiny curl && \
-    pip install reportlab requests && \
+    pip install reportlab requests cron-descriptor && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy Python scripts into container
 COPY scripts/generate_pdf.py /home/generate_pdf.py
 COPY scripts/generate_empty_pdf.py /home/generate_empty_pdf.py
 COPY scripts/send_notification.py /home/send_notification.py
+COPY scripts/describe_cron.py /home/describe_cron.py
 
 # Copy entrypoint and make it executable
 COPY entrypoint.sh /entrypoint.sh
