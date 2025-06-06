@@ -1,6 +1,10 @@
 #!/bin/bash
 
-echo "[INFO] Running weekly print job at $(date)"
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
+log "[INFO] Running weekly print job at $(date)"
 
 # Source env vars for cron
 [ -f /env.sh ] && source /env.sh
@@ -10,9 +14,9 @@ python3 /home/generate_pdf.py
 
 # Print
 if lp -d MyPrinter /home/color_test_page_dated.pdf; then
-    echo "[INFO] Print job succeeded. Sending notifications..."
+    log "[INFO] Print job succeeded. Sending notifications..."
     python3 /home/send_notification.py "SUCCESS" "Color test page printed successfully at $(date)."
 else
-    echo "[ERROR] Print job failed. Sending notifications..."
+    log "[ERROR] Print job failed. Sending notifications..."
     python3 /home/send_notification.py "FAILURE" "Color test page FAILED to print at $(date)."
 fi
