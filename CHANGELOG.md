@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.1.0](https://github.com/geertmeersman/print-color-test/tree/v1.1.0) (2025-06-13)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v1.0.0...v1.1.0)
+
+**Merged pull requests:**
+
+- feat: webserver with printer status and testing options [\#19](https://github.com/geertmeersman/print-color-test/pull/19) ([geertmeersman](https://github.com/geertmeersman))
+- fix: alpine packages [\#18](https://github.com/geertmeersman/print-color-test/pull/18) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v1.0.0](https://github.com/geertmeersman/print-color-test/tree/v1.0.0) (2025-06-13)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.4...v1.0.0)
