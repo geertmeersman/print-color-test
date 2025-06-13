@@ -20,20 +20,29 @@
 
 # 🖨️ Print Color Test Docker Container
 
-This Docker container automatically generates a color test PDF and prints it to a networked Canon printer using CUPS and cron. It's designed to keep inkjet printers like the Canon Maxify GX7050 healthy by preventing ink from drying out or air from entering the tubes.
+This Docker container automatically generates a color test PDF and prints it to a networked Canon printer using CUPS and cron.  
+It's designed to keep inkjet printers like the Canon Maxify GX7050 healthy by preventing ink from drying out or air from entering the tubes.  
+
+**Additionally, it provides a Flask-based webserver to monitor print job execution, view logs, and see cron job schedules via a friendly interface.**
 
 Ideal for inkjet printer owners who **don't print frequently** but want to **avoid clogged nozzles**.
+
 
 ---
 
 ## ✨ Features
 
-- 🎨 Generates a PDF with Cyan, Magenta, Yellow, and Black blocks *(or blank for testing)*
-- 🖨️ Prints via IPP using CUPS
-- 🕒 Scheduled weekly print every **Friday at 11:00 AM CEST**
-- ⚙️ Configurable via environment variables
-- 📧 Sends email and/or Telegram notifications on print success/failure
-- 🧪 Supports dry-run with blank PDF generation
+- 🎨 Generates a PDF with Cyan, Magenta, Yellow, and Black blocks *(or blank for testing)*  
+- 🖨️ Prints via IPP using CUPS  
+- 🕒 Scheduled weekly print every **Friday at 11:00 AM CEST** via cron  
+- 🌐 Web interface for:
+  - Viewing the latest print execution status and logs  
+  - Browsing print job history  
+  - Displaying human-readable cron job schedules  
+  - Showing container version and current year in footer  
+- ⚙️ Configurable via environment variables  
+- 📧 Sends email and/or Telegram notifications on print success/failure  
+- 🧪 Supports dry-run with blank PDF generation  
 
 ---
 
@@ -52,10 +61,12 @@ Or visit the repository directly:
 
 ## ⚙️ Environment Variables
 
-| Variable            | Description                                                                 |
-|---------------------|-----------------------------------------------------------------------------|
+| Variable             | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
 | `PRINTER_URI`        | IPP URI of the printer (e.g. `ipp://10.0.0.24:631/ipp/print`)               |
 | `PRINTER_NAME`       | Optional printer name (used in notifications only, not in `lp`)             |
+| `PRINTER_IP`         | IP address of the printer (used by the web interface for status)            |
+| `WEB_PORT`           | Port for the Flask web interface (default: 80)                              |
 | `SMTP_SERVER`        | SMTP server (e.g. `smtp.gmail.com`) to enable email notifications           |
 | `SMTP_PORT`          | SMTP server port (default: `587`)                                           |
 | `SMTP_USER`          | SMTP username (usually same as `EMAIL_FROM`)                                |
@@ -78,7 +89,11 @@ docker build -t print-color-test .
 ## 🚀 One-Time Test Run
 
 ```bash
-docker run --rm   -e PRINTER_URI=ipp://10.0.0.24:631/ipp/print   -e PRINTER_NAME="Canon GX7050"   print-color-test
+docker run --rm \
+  -e PRINTER_URI=ipp://10.0.0.24:631/ipp/print \
+  -e PRINTER_NAME="Canon GX7050" \
+  -e PRINTER_IP=10.0.0.24 \
+  print-color-test
 ```
 
 ## 🔁 Run Persistently with Docker Compose
@@ -93,6 +108,8 @@ services:
     environment:
       PRINTER_URI: ipp://10.0.0.24:631/ipp/print
       PRINTER_NAME: Canon GX7050
+      PRINTER_IP: 10.0.0.24
+      WEB_PORT: 80
       EMAIL_FROM: printer@example.com
       EMAIL_TO: you@example.com
       SMTP_SERVER: smtp.gmail.com
@@ -102,12 +119,29 @@ services:
       TELEGRAM_BOT_ID: 123456:ABCDEF
       TELEGRAM_CHAT_ID: -12345678
     ports:
-      - "631:631"  # Optional: expose CUPS web interface
+      - "631:631"   # Optional: expose CUPS web interface
+      - "80:80"     # Flask web interface (change if you set WEB_PORT differently)
     tty: true
 ```
 
 ```bash
 docker-compose up -d
+```
+
+---
+
+## 🌐 Web Interface Details
+- The Flask webserver runs on 0.0.0.0 binding to the port set by WEB_PORT (default: 80).
+- Use the web UI to:
+  - Check current print job status and logs
+  - Browse print history
+  - View the cron job schedule in a human-readable format
+  - See container version and current year in the footer
+
+The webserver is automatically started inside the container by:
+
+```bash
+exec gunicorn --chdir /home/flask --bind 0.0.0.0:$WEB_PORT --worker-class eventlet --timeout 120 web_interface:app
 ```
 
 ---

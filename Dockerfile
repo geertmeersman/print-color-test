@@ -7,36 +7,52 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install tini and system dependencies
 RUN apk add --no-cache \
-        tini \
-        cups \
-        curl \
-        vim \
-        tzdata \
-        bash \
-        busybox-suid \
-        libc6-compat \
-        python3-dev \
-        py3-setuptools \
-        py3-wheel \
-        dcron
+    tini \
+    cups \
+    cups-filters \
+    ghostscript-fonts \
+    curl \
+    vim \
+    tzdata \
+    bash \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    libc-dev \
+    openssl-dev \
+    linux-headers \
+    busybox-suid \
+    libc6-compat \
+    python3-dev \
+    py3-setuptools \
+    py3-wheel \
+    py3-pip \
+    dcron
+
+# Upgrade pip
+RUN pip3 install --upgrade pip
+
+# Install Python packages
 RUN pip install --no-cache-dir \
-        flask \
-        gunicorn \
-        eventlet \
-        reportlab \
-        requests \
-        cron-descriptor
+    flask \
+    gunicorn \
+    eventlet \
+    reportlab \
+    requests \
+    pysnmp==4.4.12 \
+    pyasn1==0.4.8 \
+    cron-descriptor
 
 # Set timezone
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Copy Python scripts
 COPY scripts/python/*.py /home/
+RUN chmod +x /home/describe_cron.py
 
 # Copy Flask config
 COPY scripts/flask/web_interface.py /home/flask/web_interface.py
 COPY scripts/flask/templates /home/flask/templates
-
 
 # Copy and set permissions for entrypoint and auxiliary scripts
 COPY entrypoint.sh /entrypoint.sh

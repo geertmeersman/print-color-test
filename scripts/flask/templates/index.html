@@ -1,26 +1,312 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Printer Control</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Printer Control Panel</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      padding: 2rem;
+      background-color: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .progress {
+      height: 20px;
+    }
+    .icon {
+      width: 30px;
+      text-align: center;
+    }
+    .status-box {
+      white-space: pre-wrap;
+      background-color: #212529;
+      color: #f8f9fa;
+      padding: 1rem;
+      border-radius: 0.3rem;
+      max-height: 180px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    footer {
+      margin-top: auto;
+      padding: 1rem 0;
+      background-color: #212529;
+      color: #f8f9fa;
+      text-align: center;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+    .console-box {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      font-family: monospace, monospace;
+      font-size: 0.9rem;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: inset 0 0 10px #00000088;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h1>Canon Printer Interface</h1>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul>{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
-    {% endif %}
-  {% endwith %}
+  <div class="container">
+    <h1 class="mb-4"><i class="fa-solid fa-print"></i> Printer Control Panel</h1>
 
-  <h2>Print Test Page</h2>
-  <form action="/print-test" method="post"><button type="submit">Send Test Job</button></form>
+    <div id="alerts"></div>
 
-  <h2>Upload PDF</h2>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".pdf" required>
-    <button type="submit">Upload & Print</button>
-  </form>
+    <section class="mb-5">
+      <h3>Device Information</h3>
+      <table class="table table-bordered">
+        <tbody id="deviceInfoTableBody">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+    </section>
 
-  <h2>Printer Status</h2>
-  <a href="/status" target="_blank">View Status</a>
+    <section class="mb-5">
+      <h3>Cronjob Description</h3>
+      <pre>
+      <pre class="console-box" id="cronDescription">{{ cronjob_description }}</pre>
+    </section>
+
+    <section class="mb-5">
+      <h3>Quick Actions</h3>
+      <div class="d-flex gap-3 flex-wrap">
+        <button id="colorPrintBtn" class="btn btn-success">
+          <i class="fa-solid fa-droplet"></i> Print Color Page
+        </button>
+        <button id="emptyPrintBtn" class="btn btn-warning">
+          <i class="fa-solid fa-file"></i> Print Empty Test Page
+        </button>
+        <button id="statusBtn" class="btn btn-info">
+          <i class="fa-solid fa-info-circle"></i> Get Printer Status
+        </button>
+      </div>
+      <pre id="printerStatus" class="status-box mt-3"></pre>
+    </section>
+
+    <section class="mb-5">
+      <h3>Ink Levels</h3>
+      <div id="inkWarning"></div>
+      <div id="inkLevels" class="row gy-3"></div>
+    </section>
+
+    <section class="mb-5">
+      <h3>Upload PDF</h3>
+      <form id="uploadForm" class="d-flex gap-2 align-items-center" autocomplete="off">
+        <input type="file" id="pdfFile" accept=".pdf" class="form-control" />
+        <button type="submit" class="btn btn-primary">Upload & Print</button>
+      </form>
+    </section>
+  </div>
+
+  <footer class="text-center mt-4 mb-2">
+    &copy; {{ year }} Geert Meersman. Version: {{ version }}
+  </footer>
+  <!-- Bootstrap Bundle JS (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const alertsDiv = document.getElementById("alerts");
+
+    // Show alert helper
+    function showAlert(message, type = "success") {
+      const alert = document.createElement("div");
+      alert.className = `alert alert-${type} alert-dismissible fade show`;
+      alert.role = "alert";
+      alert.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+      alertsDiv.appendChild(alert);
+      setTimeout(() => {
+        alert.classList.remove("show");
+        alert.classList.add("hide");
+        setTimeout(() => alert.remove(), 500);
+      }, 5000);
+    }
+
+    // Utility to disable/enable buttons by IDs
+    function setButtonsDisabled(ids, disabled) {
+      ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    // Upload form handler
+    document.getElementById("uploadForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const fileInput = document.getElementById("pdfFile");
+      if (!fileInput.files.length) {
+        showAlert("Please select a PDF file to upload.", "warning");
+        return;
+      }
+      const file = fileInput.files[0];
+      if (!file.name.toLowerCase().endsWith(".pdf")) {
+        showAlert("Only PDF files are allowed.", "warning");
+        return;
+      }
+      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        showAlert(data.message, data.success ? "success" : "danger");
+        if (data.success) fileInput.value = ""; // clear file input
+      } catch {
+        showAlert("Error uploading file.", "danger");
+      } finally {
+        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
+      }
+    });
+
+    // Print color page button
+    document.getElementById("colorPrintBtn").addEventListener("click", async () => {
+      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
+      try {
+        const res = await fetch("/print-color-page", { method: "POST" });
+        const data = await res.json();
+        showAlert(data.message, data.success ? "success" : "danger");
+      } catch {
+        showAlert("Failed to send print color job.", "danger");
+      } finally {
+        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
+      }
+    });
+
+    // Print empty test page button
+    document.getElementById("emptyPrintBtn").addEventListener("click", async () => {
+      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
+      try {
+        const res = await fetch("/print-empty-test", { method: "POST" });
+        const data = await res.json();
+        showAlert(data.message, data.success ? "success" : "danger");
+      } catch {
+        showAlert("Failed to send empty test page print job.", "danger");
+      } finally {
+        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
+      }
+    });
+
+    // Printer status button
+    document.getElementById("statusBtn").addEventListener("click", async () => {
+      const statusPre = document.getElementById("printerStatus");
+      statusPre.textContent = "Loading...";
+      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
+      try {
+        const res = await fetch("/status");
+        const data = await res.json();
+        if (data.success) {
+          statusPre.textContent = data.status;
+        } else {
+          statusPre.textContent = "Failed to get printer status.";
+        }
+      } catch {
+        statusPre.textContent = "Error fetching printer status.";
+      } finally {
+        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
+      }
+    });
+
+    // Render Device Info table, skipping empty fields
+    function renderDeviceInfo(deviceInfo) {
+      const container = document.getElementById("deviceInfoTableBody");
+      container.innerHTML = ""; // clear old
+
+      Object.entries(deviceInfo).forEach(([key, value]) => {
+        if (value && value.trim() !== "") {
+          const row = document.createElement("tr");
+          row.innerHTML = `<th scope="row">${key}</th><td>${value}</td>`;
+          container.appendChild(row);
+        }
+      });
+    }
+
+    // Load Device Info once at page load
+    async function loadDeviceInfo() {
+      try {
+        const res = await fetch("/device-info");
+        const data = await res.json();
+        if (data.success) {
+          renderDeviceInfo(data.device_info);
+        } else {
+          console.error("Failed to load device info:", data.error);
+        }
+      } catch (err) {
+        console.error("Error loading device info:", err);
+      }
+    }
+
+    // Fetch and display ink levels, show warning if low
+    async function loadInkLevels() {
+      const container = document.getElementById("inkLevels");
+      const warningDiv = document.getElementById("inkWarning");
+      container.innerHTML = "<p>Loading ink levels...</p>";
+      warningDiv.textContent = ""; // reset warning
+      try {
+        const res = await fetch("/ink-levels");
+        const data = await res.json();
+        if (data.success) {
+          container.innerHTML = "";
+          if (!data.ink_data || data.ink_data.length === 0) {
+            container.innerHTML = "<p>No ink data available.</p>";
+            return;
+          }
+          let lowInkFound = false;
+          data.ink_data.forEach(({ name, level }) => {
+            if (level < 20) lowInkFound = true;
+            const colorClass = level > 50 ? "bg-success" : level >= 20 ? "bg-warning" : "bg-danger";
+            container.insertAdjacentHTML("beforeend", `
+              <div class="col-md-6 d-flex align-items-center gap-3">
+                <div class="icon text-primary">
+                  <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="fw-semibold">${name}</div>
+                  <div class="progress">
+                    <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${level}%" aria-valuenow="${level}" aria-valuemin="0" aria-valuemax="100">
+                      ${level}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `);
+          });
+          if (lowInkFound) {
+            warningDiv.innerHTML = `
+              <div class="alert alert-warning mt-3" role="alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> One or more ink levels are low. Please check your cartridges.
+              </div>
+            `;
+          }
+        } else {
+          container.innerHTML = `<p class="text-danger">Error loading ink levels: ${data.error || "Unknown error"}</p>`;
+        }
+      } catch {
+        container.innerHTML = '<p class="text-danger">Failed to fetch ink levels.</p>';
+      }
+    }
+
+    // Init
+    loadDeviceInfo();
+    loadInkLevels();
+    loadVersion();
+
+    // Optional refreshes
+    setInterval(loadInkLevels, 300000); // 5 min
+    // setInterval(loadAlerts, 30000); // no alerts endpoint implemented currently
+
+  </script>
 </body>
 </html>
