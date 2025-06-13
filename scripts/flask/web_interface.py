@@ -1,4 +1,4 @@
-from flask import Flask, flash, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from pysnmp.hlapi import (
