@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.1.1](https://github.com/geertmeersman/print-color-test/tree/v1.1.1) (2025-06-13)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v1.1.0...v1.1.1)
+
+**Merged pull requests:**
+
+- chore: ink droplets in ink colors [\#21](https://github.com/geertmeersman/print-color-test/pull/21) ([geertmeersman](https://github.com/geertmeersman))
+- docs: web interface screenshot [\#20](https://github.com/geertmeersman/print-color-test/pull/20) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v1.1.0](https://github.com/geertmeersman/print-color-test/tree/v1.1.0) (2025-06-13)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v1.0.0...v1.1.0)
