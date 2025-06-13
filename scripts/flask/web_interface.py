@@ -19,7 +19,11 @@ def upload():
     if not file or not file.filename.endswith(".pdf"):
         flash("Invalid file. Please upload a PDF.")
         return redirect("/")
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+    sanitized_filename = secure_filename(file.filename)
+    filepath = os.path.normpath(os.path.join(app.config["UPLOAD_FOLDER"], sanitized_filename))
+    if not filepath.startswith(app.config["UPLOAD_FOLDER"]):
+        flash("Invalid file path.")
+        return redirect("/")    
     file.save(filepath)
     try:
         subprocess.run(["/usr/bin/lp", "-d", "MyPrinter", filepath], check=True)
