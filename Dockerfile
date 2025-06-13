@@ -9,17 +9,17 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apk add --no-cache \
         tini \
         cups \
-        cups-client \
-        ghostscript \
         curl \
         vim \
         tzdata \
         bash \
         busybox-suid \
         libc6-compat \
-        py3-pip \
-        py3-cron \
-    && pip install --no-cache-dir \
+        python3-dev \
+        py3-setuptools \
+        py3-wheel \
+        dcron
+RUN pip install --no-cache-dir \
         flask \
         gunicorn \
         eventlet \
