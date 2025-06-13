@@ -1,56 +1,67 @@
-# Use official slim Python 3.11 base image
-FROM python:3.11-slim
+# Use Alpine Python base
+FROM python:3.11-alpine
 
-# Install required system packages:
-# - cron: for scheduled jobs
-# - tzdata: to set correct timezone
-# - cups & cups-client: printing system and client tools
-# - ghostscript: required for PDF processing
-# Also install Python dependencies: reportlab (for PDF generation), requests (for notifications)
-RUN apt-get update && \
-    apt-get install -y cron tzdata cups cups-client ghostscript vim-tiny curl && \
-    pip install reportlab requests cron-descriptor && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV TZ=Europe/Brussels
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Copy Python scripts into container
-COPY scripts/generate_pdf.py /home/generate_pdf.py
-COPY scripts/generate_empty_pdf.py /home/generate_empty_pdf.py
-COPY scripts/send_notification.py /home/send_notification.py
-COPY scripts/describe_cron.py /home/describe_cron.py
+# Install tini and system dependencies
+RUN apk add --no-cache \
+        tini \
+        cups \
+        cups-client \
+        ghostscript \
+        curl \
+        vim \
+        tzdata \
+        bash \
+        busybox-suid \
+        libc6-compat \
+        py3-pip \
+        py3-cron \
+    && pip install --no-cache-dir \
+        flask \
+        gunicorn \
+        eventlet \
+        reportlab \
+        requests \
+        cron-descriptor
 
-# Copy entrypoint and make it executable
+# Set timezone
+RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy Python scripts
+COPY scripts/python/*.py /home/
+
+# Copy Flask config
+COPY scripts/flask/web_interface.py /home/flask/web_interface.py
+COPY scripts/flask/templates /home/flask/templates
+
+
+# Copy and set permissions for entrypoint and auxiliary scripts
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Copy auxiliary test script and make it executable
-COPY scripts/test_empty.sh /home/test_empty.sh
+COPY scripts/bash/test_empty.sh /home/
 RUN chmod +x /home/test_empty.sh
 
-# Set timezone (default: Europe/Brussels)
-ENV TZ=Europe/Brussels
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Setup cron job:
-# - Copy cron job config
-# - Copy weekly print script
-# - Set correct permissions
+# Cron job setup
 COPY cron/cronjob /etc/cron.d/color-printer
-COPY scripts/weekly_print.sh /usr/local/bin/weekly_print.sh
-RUN chmod +x /usr/local/bin/weekly_print.sh 
-RUN chmod 0644 /etc/cron.d/color-printer
-RUN crontab /etc/cron.d/color-printer  # Register cron job
+COPY scripts/bash/weekly_print.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/weekly_print.sh && \
+    chmod 0644 /etc/cron.d/color-printer && \
+    crontab /etc/cron.d/color-printer
 
-# Copy custom CUPS configuration
+# CUPS configuration
 COPY conf/cupsd.conf /etc/cups/cupsd.conf
 
-# Copy VERSION
+# Version file
 COPY VERSION /VERSION
 
 # Healthcheck
-COPY scripts/healthcheck.sh /healthcheck.sh
+COPY scripts/bash/healthcheck.sh /healthcheck.sh
 RUN chmod +x /healthcheck.sh
-
 HEALTHCHECK CMD /healthcheck.sh
 
-# Use custom entrypoint to start CUPS and cron
-ENTRYPOINT ["/entrypoint.sh"]
+# Use tini as init system
+ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]

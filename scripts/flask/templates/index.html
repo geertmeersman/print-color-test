@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Printer Control</title>
+</head>
+<body>
+  <h1>Canon Printer Interface</h1>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
+    {% endif %}
+  {% endwith %}
+
+  <h2>Print Test Page</h2>
+  <form action="/print-test" method="post"><button type="submit">Send Test Job</button></form>
+
+  <h2>Upload PDF</h2>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required>
+    <button type="submit">Upload & Print</button>
+  </form>
+
+  <h2>Printer Status</h2>
+  <a href="/status" target="_blank">View Status</a>
+</body>
+</html>
