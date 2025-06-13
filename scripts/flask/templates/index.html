@@ -4,78 +4,104 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Printer Control Panel</title>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- FontAwesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <style>
-    body {
-      padding: 2rem;
-      background-color: #f8f9fa;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .progress {
-      height: 20px;
-    }
-    .icon {
-      width: 30px;
-      text-align: center;
-    }
-    .status-box {
-      white-space: pre-wrap;
-      background-color: #212529;
-      color: #f8f9fa;
-      padding: 1rem;
-      border-radius: 0.3rem;
-      max-height: 180px;
-      overflow-y: auto;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-    footer {
-      margin-top: auto;
-      padding: 1rem 0;
-      background-color: #212529;
-      color: #f8f9fa;
-      text-align: center;
-      font-size: 0.9rem;
-      user-select: none;
-    }
-    .console-box {
-      background-color: #1e1e1e;
-      color: #d4d4d4;
-      font-family: monospace, monospace;
-      font-size: 0.9rem;
-      padding: 1rem;
-      border-radius: 5px;
-      box-shadow: inset 0 0 10px #00000088;
-      max-height: 300px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-  </style>
+
+<style>
+  :root {
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --console-bg: #212529;
+    --console-text: #f8f9fa;
+    --footer-bg: #212529;
+    --footer-text: #f8f9fa;
+  }
+
+  body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --console-bg: #1e1e1e;
+    --console-text: #d4d4d4;
+    --footer-bg: #1a1a1a;
+    --footer-text: #d4d4d4;
+  }
+
+  body.light-mode {
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --console-bg: #212529;
+    --console-text: #f8f9fa;
+    --footer-bg: #212529;
+    --footer-text: #f8f9fa;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .progress {
+    height: 20px;
+  }
+
+  .icon {
+    width: 30px;
+    text-align: center;
+  }
+
+  .status-box, .console-box {
+    background-color: var(--console-bg);
+    color: var(--console-text);
+    padding: 1rem;
+    border-radius: 0.3rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .console-box {
+    max-height: 300px;
+    box-shadow: inset 0 0 10px #00000088;
+  }
+
+  footer {
+    margin-top: auto;
+    padding: 1rem 0;
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    text-align: center;
+    font-size: 0.9rem;
+  }
+</style>
+
 </head>
 <body>
   <div class="container">
     <h1 class="mb-4"><i class="fa-solid fa-print"></i> Printer Control Panel</h1>
+
+    <div class="mb-3 d-flex justify-content-end">
+      <button id="toggleTheme" class="btn btn-outline-secondary btn-sm">
+        <i class="fa-solid fa-circle-half-stroke"></i> Toggle Light/Dark
+      </button>
+    </div>
 
     <div id="alerts"></div>
 
     <section class="mb-5">
       <h3>Device Information</h3>
       <table class="table table-bordered">
-        <tbody id="deviceInfoTableBody">
-          <!-- Filled dynamically -->
-        </tbody>
+        <tbody id="deviceInfoTableBody"></tbody>
       </table>
     </section>
 
     <section class="mb-5">
       <h3>Cronjob Description</h3>
-      <pre>
       <pre class="console-box" id="cronDescription">{{ cronjob_description }}</pre>
     </section>
 
@@ -110,16 +136,15 @@
     </section>
   </div>
 
-  <footer class="text-center mt-4 mb-2">
+  <footer>
     &copy; {{ year }} Geert Meersman. Version: {{ version }}
   </footer>
-  <!-- Bootstrap Bundle JS (includes Popper) -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     const alertsDiv = document.getElementById("alerts");
 
-    // Show alert helper
     function showAlert(message, type = "success") {
       const alert = document.createElement("div");
       alert.className = `alert alert-${type} alert-dismissible fade show`;
@@ -133,7 +158,6 @@
       }, 5000);
     }
 
-    // Utility to disable/enable buttons by IDs
     function setButtonsDisabled(ids, disabled) {
       ids.forEach(id => {
         const btn = document.getElementById(id);
@@ -141,7 +165,24 @@
       });
     }
 
-    // Upload form handler
+    function getInkColor(name) {
+      const colorMap = {
+        black: "#000000",
+        cyan: "#00bcd4",
+        magenta: "#e91e63",
+        yellow: "#ffc107",
+        gray: "#9e9e9e",
+        red: "#f44336",
+        blue: "#2196f3",
+        green: "#4caf50"
+      };
+      const lower = name.toLowerCase();
+      for (const color in colorMap) {
+        if (lower.includes(color)) return colorMap[color];
+      }
+      return "#6c757d"; // default gray
+    }
+
     document.getElementById("uploadForm").addEventListener("submit", async e => {
       e.preventDefault();
       const fileInput = document.getElementById("pdfFile");
@@ -154,8 +195,8 @@
         showAlert("Only PDF files are allowed.", "warning");
         return;
       }
-      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
 
+      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -163,7 +204,7 @@
         const res = await fetch("/upload", { method: "POST", body: formData });
         const data = await res.json();
         showAlert(data.message, data.success ? "success" : "danger");
-        if (data.success) fileInput.value = ""; // clear file input
+        if (data.success) fileInput.value = "";
       } catch {
         showAlert("Error uploading file.", "danger");
       } finally {
@@ -171,7 +212,6 @@
       }
     });
 
-    // Print color page button
     document.getElementById("colorPrintBtn").addEventListener("click", async () => {
       setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
       try {
@@ -185,7 +225,6 @@
       }
     });
 
-    // Print empty test page button
     document.getElementById("emptyPrintBtn").addEventListener("click", async () => {
       setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
       try {
@@ -199,7 +238,6 @@
       }
     });
 
-    // Printer status button
     document.getElementById("statusBtn").addEventListener("click", async () => {
       const statusPre = document.getElementById("printerStatus");
       statusPre.textContent = "Loading...";
@@ -207,11 +245,7 @@
       try {
         const res = await fetch("/status");
         const data = await res.json();
-        if (data.success) {
-          statusPre.textContent = data.status;
-        } else {
-          statusPre.textContent = "Failed to get printer status.";
-        }
+        statusPre.textContent = data.success ? data.status : "Failed to get printer status.";
       } catch {
         statusPre.textContent = "Error fetching printer status.";
       } finally {
@@ -219,11 +253,9 @@
       }
     });
 
-    // Render Device Info table, skipping empty fields
     function renderDeviceInfo(deviceInfo) {
       const container = document.getElementById("deviceInfoTableBody");
-      container.innerHTML = ""; // clear old
-
+      container.innerHTML = "";
       Object.entries(deviceInfo).forEach(([key, value]) => {
         if (value && value.trim() !== "") {
           const row = document.createElement("tr");
@@ -233,80 +265,99 @@
       });
     }
 
-    // Load Device Info once at page load
     async function loadDeviceInfo() {
       try {
         const res = await fetch("/device-info");
         const data = await res.json();
-        if (data.success) {
-          renderDeviceInfo(data.device_info);
-        } else {
-          console.error("Failed to load device info:", data.error);
-        }
+        if (data.success) renderDeviceInfo(data.device_info);
       } catch (err) {
         console.error("Error loading device info:", err);
       }
     }
 
-    // Fetch and display ink levels, show warning if low
     async function loadInkLevels() {
       const container = document.getElementById("inkLevels");
       const warningDiv = document.getElementById("inkWarning");
       container.innerHTML = "<p>Loading ink levels...</p>";
-      warningDiv.textContent = ""; // reset warning
+      warningDiv.textContent = "";
+
       try {
         const res = await fetch("/ink-levels");
         const data = await res.json();
-        if (data.success) {
-          container.innerHTML = "";
-          if (!data.ink_data || data.ink_data.length === 0) {
-            container.innerHTML = "<p>No ink data available.</p>";
-            return;
-          }
-          let lowInkFound = false;
-          data.ink_data.forEach(({ name, level }) => {
-            if (level < 20) lowInkFound = true;
-            const colorClass = level > 50 ? "bg-success" : level >= 20 ? "bg-warning" : "bg-danger";
-            container.insertAdjacentHTML("beforeend", `
-              <div class="col-md-6 d-flex align-items-center gap-3">
-                <div class="icon text-primary">
-                  <i class="fa-solid fa-droplet"></i>
+        if (!data.success) {
+          container.innerHTML = `<p class="text-danger">Error: ${data.error || "Unknown error"}</p>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        let lowInk = false;
+
+        data.ink_data.forEach(({ name, level }) => {
+          if (level < 20) lowInk = true;
+          const inkColor = getInkColor(name);
+          container.insertAdjacentHTML("beforeend", `
+            <div class="col-md-6 d-flex align-items-center gap-3">
+              <div class="icon" style="color: ${inkColor}">
+                <i class="fa-solid fa-droplet"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="fw-semibold d-flex align-items-center gap-2">
+                  <span style="width:12px; height:12px; border-radius:50%; background-color:${inkColor}; display:inline-block;"></span>
+                  ${name}
                 </div>
-                <div class="flex-grow-1">
-                  <div class="fw-semibold">${name}</div>
-                  <div class="progress">
-                    <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${level}%" aria-valuenow="${level}" aria-valuemin="0" aria-valuemax="100">
-                      ${level}%
-                    </div>
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar"
+                    style="width: ${level}%; background-color: ${inkColor};"
+                    aria-valuenow="${level}" aria-valuemin="0" aria-valuemax="100">
+                    ${level}%
                   </div>
                 </div>
               </div>
-            `);
-          });
-          if (lowInkFound) {
-            warningDiv.innerHTML = `
-              <div class="alert alert-warning mt-3" role="alert">
-                <i class="fa-solid fa-triangle-exclamation"></i> One or more ink levels are low. Please check your cartridges.
-              </div>
-            `;
-          }
-        } else {
-          container.innerHTML = `<p class="text-danger">Error loading ink levels: ${data.error || "Unknown error"}</p>`;
+            </div>
+          `);
+        });
+
+        if (lowInk) {
+          warningDiv.innerHTML = `
+            <div class="alert alert-warning mt-3" role="alert">
+              <i class="fa-solid fa-triangle-exclamation"></i> One or more ink levels are low.
+            </div>
+          `;
         }
       } catch {
         container.innerHTML = '<p class="text-danger">Failed to fetch ink levels.</p>';
       }
     }
 
-    // Init
+    function loadVersion() {
+      // Placeholder: replace if needed
+    }
+
+    function applyTheme(mode) {
+      document.body.classList.remove("light-mode", "dark-mode");
+      if (mode) document.body.classList.add(`${mode}-mode`);
+    }
+
+    function initTheme() {
+      let saved = localStorage.getItem("theme");
+      if (!saved) {
+        saved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      applyTheme(saved);
+    }
+
+    document.getElementById("toggleTheme").addEventListener("click", () => {
+      const current = document.body.classList.contains("dark-mode") ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", next);
+      applyTheme(next);
+    });
+
+    initTheme();
     loadDeviceInfo();
     loadInkLevels();
     loadVersion();
-
-    // Optional refreshes
-    setInterval(loadInkLevels, 300000); // 5 min
-    // setInterval(loadAlerts, 30000); // no alerts endpoint implemented currently
-
+    setInterval(loadInkLevels, 300000); // every 5 mins
   </script>
 </body>
 </html>
