@@ -144,6 +144,10 @@ The webserver is automatically started inside the container by:
 exec gunicorn --chdir /home/flask --bind 0.0.0.0:$WEB_PORT --worker-class eventlet --timeout 120 web_interface:app
 ```
 
+Screenshot
+
+![Web interface screenshot](https://github.com/geertmeersman/print-color-test/raw/main/images/web_interface.png)
+
 ---
 
 ## 📆 Weekly Scheduled Print
