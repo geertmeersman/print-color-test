@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, flash
-import subprocess, os
+import subprocess
+import os
 
 UPLOAD_FOLDER = "/tmp/uploads"
 app = Flask(__name__)
@@ -20,7 +21,7 @@ def upload():
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
     file.save(filepath)
     try:
-        subprocess.run(["lp", "-d", "MyPrinter", filepath], check=True)
+        subprocess.run(["/usr/bin/lp", "-d", "MyPrinter", filepath], check=True)
         flash("PDF sent to printer.")
     except subprocess.CalledProcessError:
         flash("Failed to print PDF.")
@@ -38,7 +39,7 @@ def print_test():
 @app.route("/status")
 def status():
     try:
-        out = subprocess.check_output(["lpstat", "-p", "MyPrinter"], text=True)
+        out = subprocess.check_output(["/usr/bin/lpstat", "-p", "MyPrinter"], text=True)
     except subprocess.CalledProcessError:
         out = "Could not fetch printer status."
     return f"<pre>{out}</pre>"
