@@ -1,10 +1,11 @@
 from flask import Flask, request, redirect, render_template, flash
+from werkzeug.utils import secure_filename
 import subprocess
 import os
 
 UPLOAD_FOLDER = "/tmp/uploads"
 app = Flask(__name__)
-app.secret_key = "super-secret"  # For flash messages
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
