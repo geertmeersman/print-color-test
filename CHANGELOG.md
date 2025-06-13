@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.0.0](https://github.com/geertmeersman/print-color-test/tree/v1.0.0) (2025-06-13)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.4...v1.0.0)
+
+**Merged pull requests:**
+
+- feat: webserver [\#17](https://github.com/geertmeersman/print-color-test/pull/17) ([geertmeersman](https://github.com/geertmeersman))
+- build\(deps\): bump ruff from 0.11.11 to 0.11.13 [\#16](https://github.com/geertmeersman/print-color-test/pull/16) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump docker/build-push-action from 5 to 6 [\#15](https://github.com/geertmeersman/print-color-test/pull/15) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.2.4](https://github.com/geertmeersman/print-color-test/tree/v0.2.4) (2025-06-06)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v0.2.3...v0.2.4)
