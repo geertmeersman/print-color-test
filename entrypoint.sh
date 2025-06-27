@@ -49,7 +49,7 @@ fi
 
 # Start cron
 log "[INFO] Starting cron service..."
-cron &
+crond -f -L /var/log/cron.log &
 
 # Describe cron jobs
 log "[INFO] Describing cron jobs..."
