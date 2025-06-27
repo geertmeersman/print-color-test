@@ -1,7 +1,3 @@
-# Set environment variables for cron
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-SHELL=/bin/bash
-
 # ┌───────────── minute (0 - 59)
 # │ ┌───────────── hour (0 - 23)
 # │ │  ┌───────────── day of the month (1 - 31)
@@ -9,4 +5,4 @@ SHELL=/bin/bash
 # │ │  │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
 # │ │  │ │ │
 # │ │  │ │ │
-  0 11 * * 5 /usr/local/bin/weekly_print.sh >>  /proc/1/fd/1 2>&1
+  0 11 * * 5 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin SHELL=/bin/bash /usr/local/bin/weekly_print.sh >> /proc/1/fd/1 2>&1
