@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════════════════╗
-║         CRONTAB HUMANIZER – Docker Startup Utility          ║
+║         CRONTAB HUMANIZER – Docker Startup Utility           ║
 ╠══════════════════════════════════════════════════════════════╣
-║ Reads cron expressions from /etc/cron.d/color-printer and   ║
-║ uses cron-descriptor to generate human-readable schedules.  ║
+║ Reads cron expressions from /home/cron/cronjob and           ║
+║ uses cron-descriptor to generate human-readable schedules.   ║
 ║                                                              ║
 ║ Example:                                                     ║
 ║   0 11 * * 5   →   At 11:00 AM, only on Friday               ║
 ║                                                              ║
-║ Author: Geert Meersman 🚀                                    ║
+║ Author: Geert Meersman 🚀                                   ║
 ╚══════════════════════════════════════════════════════════════╝
 """
 
