@@ -18,7 +18,7 @@ import re
 
 print("📆   Scheduled Cron Jobs:\n")
 
-with open("/etc/cron.d/color-printer", "r") as file:
+with open("/home/cron/cronjob", "r") as file:
     for line in file:
         # Remove leading/trailing spaces
         line = line.strip()
