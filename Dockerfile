@@ -62,11 +62,11 @@ COPY scripts/bash/test_empty.sh /home/
 RUN chmod +x /home/test_empty.sh
 
 # Cron job setup
-COPY cron/cronjob /etc/cron.d/color-printer
+COPY cron /home/cron
 COPY scripts/bash/weekly_print.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/weekly_print.sh && \
-    chmod 0644 /etc/cron.d/color-printer && \
-    crontab /etc/cron.d/color-printer
+    chmod 0644 /home/cron/cronjob && \
+    crontab /home/cron/cronjob
 
 # CUPS configuration
 COPY conf/cupsd.conf /etc/cups/cupsd.conf
