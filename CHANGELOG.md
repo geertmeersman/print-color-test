@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.0.3](https://github.com/geertmeersman/print-color-test/tree/v2.0.3) (2025-07-04)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v2.0.2...v2.0.3)
+
+**Merged pull requests:**
+
+- fix: duplicate cronjob execution [\#28](https://github.com/geertmeersman/print-color-test/pull/28) ([geertmeersman](https://github.com/geertmeersman))
+- chore\(deps\): bump ruff from 0.12.0 to 0.12.1 [\#27](https://github.com/geertmeersman/print-color-test/pull/27) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v2.0.2](https://github.com/geertmeersman/print-color-test/tree/v2.0.2) (2025-06-27)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v2.0.1...v2.0.2)
