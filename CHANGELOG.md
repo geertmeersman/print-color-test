@@ -1,5 +1,22 @@
 # Changelog
 
+## [v3.0.0](https://github.com/geertmeersman/print-color-test/tree/v3.0.0) (2025-08-18)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v2.0.3...v3.0.0)
+
+**Merged pull requests:**
+
+- feat: rectangle height reduced \(/2 compared to before\) [\#38](https://github.com/geertmeersman/print-color-test/pull/38) ([geertmeersman](https://github.com/geertmeersman))
+- chore\(deps\): bump ruff from 0.12.7 to 0.12.8 [\#37](https://github.com/geertmeersman/print-color-test/pull/37) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/checkout from 4 to 5 [\#36](https://github.com/geertmeersman/print-color-test/pull/36) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): update pip requirement from \<25.2,\>=8.0.3 to \>=8.0.3,\<25.3 [\#35](https://github.com/geertmeersman/print-color-test/pull/35) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump ruff from 0.12.4 to 0.12.7 [\#34](https://github.com/geertmeersman/print-color-test/pull/34) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump hugo19941994/delete-draft-releases from 1.0.1 to 2.0.0 [\#33](https://github.com/geertmeersman/print-color-test/pull/33) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump ruff from 0.12.3 to 0.12.4 [\#32](https://github.com/geertmeersman/print-color-test/pull/32) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump ruff from 0.12.2 to 0.12.3 [\#31](https://github.com/geertmeersman/print-color-test/pull/31) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump ruff from 0.12.1 to 0.12.2 [\#30](https://github.com/geertmeersman/print-color-test/pull/30) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Chore: Update comment to reflect the new file path. [\#29](https://github.com/geertmeersman/print-color-test/pull/29) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v2.0.3](https://github.com/geertmeersman/print-color-test/tree/v2.0.3) (2025-07-04)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v2.0.2...v2.0.3)
