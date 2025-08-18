@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.0.1](https://github.com/geertmeersman/print-color-test/tree/v3.0.1) (2025-08-18)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v3.0.0...v3.0.1)
+
+**Merged pull requests:**
+
+- fix: add release link to version footer in web interface [\#39](https://github.com/geertmeersman/print-color-test/pull/39) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v3.0.0](https://github.com/geertmeersman/print-color-test/tree/v3.0.0) (2025-08-18)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v2.0.3...v3.0.0)
