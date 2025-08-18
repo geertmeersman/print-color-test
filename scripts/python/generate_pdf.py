@@ -23,10 +23,11 @@ colors = [
 for i, (name, color) in enumerate(colors):
     y_position = margin_y + i * block_height
     c.setFillColor(color)
-    c.rect(margin_x, y_position, usable_width, block_height * 0.8, fill=1)
+    c.rect(margin_x, y_position, usable_width, block_height * 0.4, fill=1)
+    
     c.setFillColorRGB(1, 1, 1 if name != "Yellow" else 0)
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(margin_x + 10, y_position + block_height * 0.4, name)
+    c.drawString(margin_x + 10, y_position + block_height * 0.2, name)
 
 c.setFillColorRGB(0, 0, 0)
 c.setFont("Helvetica", 12)
