@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.0.2](https://github.com/geertmeersman/print-color-test/tree/v3.0.2) (2025-08-22)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v3.0.1...v3.0.2)
+
+**Merged pull requests:**
+
+- fix: rectangle height reduced \(/2 compared to before\) [\#40](https://github.com/geertmeersman/print-color-test/pull/40) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v3.0.1](https://github.com/geertmeersman/print-color-test/tree/v3.0.1) (2025-08-18)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v3.0.0...v3.0.1)
