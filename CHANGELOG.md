@@ -1,5 +1,13 @@
 # Changelog
 
+## [v4.0.1](https://github.com/geertmeersman/print-color-test/tree/v4.0.1) (2026-10-22)
+
+[Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v4.0.0...v4.0.1)
+
+**Fixed bugs:**
+
+- fix: replace eventlet with gthread worker \(Python 3.13 incompatible\) [\#128](https://github.com/geertmeersman/print-color-test/pull/128) ([geertmeersman](https://github.com/geertmeersman))
+
 ## [v4.0.0](https://github.com/geertmeersman/print-color-test/tree/v4.0.0) (2026-10-22)
 
 [Full Changelog](https://github.com/geertmeersman/print-color-test/compare/v3.0.2...v4.0.0)
