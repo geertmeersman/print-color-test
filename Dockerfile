@@ -32,7 +32,6 @@ RUN pip3 install --upgrade pip
 RUN pip install --no-cache-dir \
     flask \
     gunicorn \
-    eventlet \
     reportlab \
     requests \
     pysnmp>=7.1.30 \
