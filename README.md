@@ -20,8 +20,8 @@
 
 # 🖨️ Print Color Test Docker Container
 
-This Docker container automatically generates a color test PDF and prints it to a networked Canon printer using CUPS and cron.  
-It's designed to keep inkjet printers like the Canon Maxify GX7050 healthy by preventing ink from drying out or air from entering the tubes.  
+This Docker container automatically generates a color test PDF and prints it to a networked Canon printer using CUPS and cron.
+It's designed to keep inkjet printers like the Canon Maxify GX7050 healthy by preventing ink from drying out or air from entering the tubes.
 
 **Additionally, it provides a Flask-based webserver to monitor print job execution, view logs, and see cron job schedules via a friendly interface.**
 
@@ -32,21 +32,23 @@ Ideal for inkjet printer owners who **don't print frequently** but want to **avo
 
 ## ✨ Features
 
-- 🎨 Generates a PDF with Cyan, Magenta, Yellow, and Black blocks *(or blank for testing)*  
-- 🖨️ Prints via IPP using CUPS  
-- 🕒 Scheduled weekly print every **Friday at 11:00 AM CEST** via cron  
+- 🎨 Generates a PDF with Cyan, Magenta, Yellow, and Black blocks *(or blank for testing)*
+- 🖨️ Prints via IPP using CUPS
+- 🕒 Scheduled weekly print every **Friday at 11:00 AM CEST** via cron
 - 🌐 Web interface for:
-  - Viewing the latest print execution status and logs  
-  - Browsing print job history  
-  - Displaying human-readable cron job schedules  
-  - Showing container version and current year in footer  
-- ⚙️ Configurable via environment variables  
-- 📧 Sends email and/or Telegram notifications on print success/failure  
-- 🧪 Supports dry-run with blank PDF generation  
+  - Viewing the latest print execution status and logs
+  - Browsing print job history
+  - Displaying human-readable cron job schedules
+  - Showing container version and current year in footer
+- ⚙️ Configurable via environment variables
+- 📧 Sends email and/or Telegram notifications on print success/failure
+- 🧪 Supports dry-run with blank PDF generation
 
 ---
 
 ## 📦 Docker Image
+
+`python:3.13-alpine` — currently pinned to `3.13.17-alpine3.24`
 
 You can pull the image directly from Docker Hub:
 
@@ -54,7 +56,7 @@ You can pull the image directly from Docker Hub:
 docker pull geertmeersman/print-color-test
 ```
 
-Or visit the repository directly:  
+Or visit the repository directly:
 🔗 [https://hub.docker.com/r/geertmeersman/print-color-test](https://hub.docker.com/r/geertmeersman/print-color-test)
 
 ---
@@ -225,12 +227,12 @@ To receive print job notifications via Telegram, you’ll need:
 ### 🛠️ Step 1: Create a Telegram Bot
 
 1. Open Telegram and search for `@BotFather`
-2. Start a chat and send:  
+2. Start a chat and send:
    ```
    /newbot
    ```
 3. Follow the prompts to name your bot
-4. You’ll get a token that looks like:  
+4. You’ll get a token that looks like:
    ```
    123456789:ABCDefGhIjKlMnOpQRStuvWxYz
    ```
@@ -239,11 +241,11 @@ To receive print job notifications via Telegram, you’ll need:
 ### 🧾 Step 2: Get Your Chat ID
 
 1. Start a chat with your new bot (just send it any message)
-2. Open your browser and visit:  
+2. Open your browser and visit:
    ```
    https://api.telegram.org/bot<YOUR_BOT_ID>/getUpdates
    ```
-   For example:  
+   For example:
    ```
    https://api.telegram.org/bot123456789:ABCDefGhIjKlMnOpQRStuvWxYz/getUpdates
    ```
