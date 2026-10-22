@@ -1,4 +1,5 @@
 import sys
+import types
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -6,25 +7,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts" / "python"))
 
 
 def run_notification(status, message, env=None):
-    """Helper to run send_notification with given args and env."""
-    import types
-
     src = Path(__file__).parent.parent / "scripts" / "python" / "send_notification.py"
     code = src.read_text()
     mod = types.ModuleType("send_notification_test")
-    mod.__dict__["__name__"] = "send_notification_test"
-
-    with patch.dict("os.environ", env or {}):
-        with patch("sys.argv", ["send_notification.py", status, message]):
-            exec(compile(code, str(src), "exec"), mod.__dict__)
+    with patch.dict("os.environ", env or {}), patch("sys.argv", ["send_notification.py", status, message]):
+        exec(compile(code, str(src), "exec"), mod.__dict__)
 
 
 class TestSendNotification:
     def test_skips_email_when_smtp_not_configured(self, capsys):
         run_notification("SUCCESS", "Test message", {"SMTP_SERVER": ""})
-        # No output expected since SMTP_SERVER is empty
-        captured = capsys.readouterr()
-        assert "Email" not in captured.out
+        assert "Email" not in capsys.readouterr().out
 
     def test_sends_email_on_success(self, capsys):
         env = {
@@ -33,7 +26,7 @@ class TestSendNotification:
             "EMAIL_FROM": "from@example.com",
             "EMAIL_TO": "to@example.com",
             "SMTP_USER": "user",
-            "SMTP_PWD": "pass",
+            "SMTP_PWD": "test-smtp-password",
             "PRINTER_NAME": "TestPrinter",
         }
         mock_smtp = MagicMock()
@@ -50,7 +43,7 @@ class TestSendNotification:
             "EMAIL_FROM": "from@example.com",
             "EMAIL_TO": "to@example.com",
             "SMTP_USER": "user",
-            "SMTP_PWD": "pass",
+            "SMTP_PWD": "test-smtp-password",
             "PRINTER_NAME": "TestPrinter",
         }
         with patch("smtplib.SMTP", side_effect=ConnectionRefusedError("refused")):
