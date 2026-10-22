@@ -7,13 +7,13 @@ log() {
 
 # Display banner
 cat << "EOF"
- _____                _    ___  ___                                         
-|  __ \              | |   |  \/  |                                         
-| |  \/ ___  ___ _ __| |_  | .  . | ___  ___ _ __ ___ _ __ ___   __ _ _ __  
-| | __ / _ \/ _ \ '__| __| | |\/| |/ _ \/ _ \ '__/ __| '_ ` _ \ / _` | '_ \ 
+ _____                _    ___  ___
+|  __ \              | |   |  \/  |
+| |  \/ ___  ___ _ __| |_  | .  . | ___  ___ _ __ ___ _ __ ___   __ _ _ __
+| | __ / _ \/ _ \ '__| __| | |\/| |/ _ \/ _ \ '__/ __| '_ ` _ \ / _` | '_ \
 | |_\ \  __/  __/ |  | |_  | |  | |  __/  __/ |  \__ \ | | | | | (_| | | | |
  \____/\___|\___|_|   \__| \_|  |_/\___|\___|_|  |___/_| |_| |_|\__,_|_| |_|
-                                                                            
+
 Print Color Test Docker Container
 by Geert Meersman
 ===========================================
@@ -72,4 +72,4 @@ lpstat -p "$CUPS_PRINTER_NAME" || log "[WARN] Could not retrieve printer status.
 
 WEB_PORT="${WEB_PORT:-80}"
 log "[INFO] Launching Flask web app on port $WEB_PORT..."
-exec gunicorn --chdir /home/flask --bind 0.0.0.0:$WEB_PORT --worker-class eventlet --timeout 120 web_interface:app
+exec gunicorn --chdir /home/flask --bind 0.0.0.0:$WEB_PORT --workers 2 --worker-class gthread --threads 4 --timeout 120 web_interface:app
