@@ -52,4 +52,4 @@ jobs:
           # comma-separated list of test IDs to skip
           # skips: # optional, default is DEFAULT
           # path to a .bandit file that supplies command line arguments
-          # ini_path: # optional, default is DEFAULT
+          ini_path: .bandit # optional, default is DEFAULT

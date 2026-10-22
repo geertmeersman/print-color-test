@@ -1,16 +1,12 @@
-name: "Analysis - Ruff"
+name: "Analysis - Ruff & Tests"
 
 on:
   push:
-    branches:
-      - "main"
-    paths:
-      - "**.py"
+    branches: [ "main" ]
+    paths: [ "**.py" ]
   pull_request:
-    branches:
-      - "main"
-    paths:
-      - "**.py"
+    branches: [ "main" ]
+    paths: [ "**.py" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,19 +15,31 @@ concurrency:
 jobs:
   ruff:
     name: "Ruff"
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout the repository"
-        uses: "actions/checkout@v7"
+      - name: Checkout the repository
+        uses: actions/checkout@v7
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v7
+      - name: Run Ruff
+        uses: astral-sh/ruff-action@v3
         with:
-          python-version: "3.10"
-          cache: "pip"
+          args: check .
+          version: "0.11.13"
 
-      - name: "Install requirements"
-        run: python3 -m pip install -r requirements.txt
+  pytest:
+    name: "Pytest"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v7
 
-      - name: "Run"
-        run: python3 -m ruff check .
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install pytest pytest-cov requests flask reportlab pysnmp pyasn1 cron-descriptor werkzeug
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short

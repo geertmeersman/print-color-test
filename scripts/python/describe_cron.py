@@ -13,21 +13,19 @@
 ╚══════════════════════════════════════════════════════════════╝
 """
 
-from cron_descriptor import get_description
 import re
+
+from cron_descriptor import get_description
 
 print("📆   Scheduled Cron Jobs:\n")
 
-with open("/home/cron/cronjob", "r") as file:
+with open("/home/cron/cronjob") as file:
     for line in file:
-        # Remove leading/trailing spaces
         line = line.strip()
 
-        # Skip comments, env vars, or empty lines
         if not line or line.startswith("#") or "=" in line:
             continue
 
-        # Match first 5 fields (cron expression)
         match = re.match(r"^(\S+\s+\S+\s+\S+\s+\S+\s+\S+)", line)
         if match:
             cron_expr = match.group(1)

@@ -1,11 +1,9 @@
-# Use Alpine Python base
-FROM python:3.11-alpine
+# python:3.13-alpine 3.13.17-alpine3.24
+FROM python:3.13-alpine@sha256:c50ccfb66e5cc97a610dcd0b9597de6ef5b52c96280b51997b353a0fc87a8361
 
-# Set environment variables
 ENV TZ=Europe/Brussels
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install tini and system dependencies
 RUN apk add --no-cache \
     tini \
     cups \
@@ -29,55 +27,44 @@ RUN apk add --no-cache \
     py3-pip \
     dcron
 
-# Upgrade pip
 RUN pip3 install --upgrade pip
 
-# Install Python packages
 RUN pip install --no-cache-dir \
     flask \
     gunicorn \
     eventlet \
     reportlab \
     requests \
-    pysnmp==4.4.12 \
-    pyasn1==0.4.8 \
+    pysnmp>=7.1.30 \
+    pyasn1>=0.6.4 \
     cron-descriptor
 
-# Set timezone
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Copy Python scripts
 COPY scripts/python/*.py /home/
 RUN chmod +x /home/describe_cron.py
 
-# Copy Flask config
 COPY scripts/flask/web_interface.py /home/flask/web_interface.py
 COPY scripts/flask/templates /home/flask/templates
 
-# Copy and set permissions for entrypoint and auxiliary scripts
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 COPY scripts/bash/test_empty.sh /home/
 RUN chmod +x /home/test_empty.sh
 
-# Cron job setup
 COPY cron /home/cron
 COPY scripts/bash/weekly_print.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/weekly_print.sh && \
     chmod 0644 /home/cron/cronjob && \
     crontab /home/cron/cronjob
 
-# CUPS configuration
 COPY conf/cupsd.conf /etc/cups/cupsd.conf
 
-# Version file
 COPY VERSION /VERSION
 
-# Healthcheck
 COPY scripts/bash/healthcheck.sh /healthcheck.sh
 RUN chmod +x /healthcheck.sh
 HEALTHCHECK CMD /healthcheck.sh
 
-# Use tini as init system
 ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]
