@@ -52,6 +52,10 @@ services:
 | `TELEGRAM_BOT_ID` | Telegram bot token |
 | `TELEGRAM_CHAT_ID` | Telegram chat ID |
 
+## Screenshot
+
+![Web interface](https://github.com/geertmeersman/print-color-test/raw/main/images/web_interface_v2.png)
+
 ## Base image
 
 `python:3.13-alpine` — currently pinned to `3.13.17-alpine3.24`

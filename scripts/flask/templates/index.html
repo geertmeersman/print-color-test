@@ -1,316 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Printer Control Panel</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-
-<style>
-  :root {
-    --bg-color: #f8f9fa;
-    --text-color: #212529;
-    --console-bg: #212529;
-    --console-text: #f8f9fa;
-    --footer-bg: #212529;
-    --footer-text: #f8f9fa;
-  }
-
-  body.dark-mode {
-    --bg-color: #121212;
-    --text-color: #e0e0e0;
-    --console-bg: #1e1e1e;
-    --console-text: #d4d4d4;
-    --footer-bg: #1a1a1a;
-    --footer-text: #d4d4d4;
-  }
-
-  body.light-mode {
-    --bg-color: #f8f9fa;
-    --text-color: #212529;
-    --console-bg: #212529;
-    --console-text: #f8f9fa;
-    --footer-bg: #212529;
-    --footer-text: #f8f9fa;
-  }
-
-  body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 2rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .progress {
-    height: 20px;
-  }
-
-  .icon {
-    width: 30px;
-    text-align: center;
-  }
-
-  .status-box, .console-box {
-    background-color: var(--console-bg);
-    color: var(--console-text);
-    padding: 1rem;
-    border-radius: 0.3rem;
-    font-family: monospace;
-    font-size: 0.9rem;
-    white-space: pre-wrap;
-    max-height: 180px;
-    overflow-y: auto;
-  }
-
-  .console-box {
-    max-height: 300px;
-    box-shadow: inset 0 0 10px #00000088;
-  }
-
-  footer {
-    margin-top: auto;
-    padding: 1rem 0;
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
-    text-align: center;
-    font-size: 0.9rem;
-  }
-</style>
-
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: { light: '#ffffff', dark: '#1e1e2e' },
+            base: { light: '#f1f5f9', dark: '#13131f' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .progress-bar-inner { transition: width 0.6s ease; }
+    .card { @apply rounded-2xl shadow-sm border; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
 </head>
-<body>
-  <div class="container">
-    <h1 class="mb-4"><i class="fa-solid fa-print"></i> Printer Control Panel</h1>
+<body class="bg-slate-100 dark:bg-[#13131f] text-slate-800 dark:text-slate-200 min-h-full flex flex-col transition-colors duration-300">
 
-    <div class="mb-3 d-flex justify-content-end">
-      <button id="toggleTheme" class="btn btn-outline-secondary btn-sm">
-        <i class="fa-solid fa-circle-half-stroke"></i> Toggle Light/Dark
+  <!-- Header -->
+  <header class="bg-white dark:bg-[#1e1e2e] border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-print text-blue-500 text-2xl"></i>
+        <div>
+          <h1 class="text-lg font-bold leading-tight">Printer Control Panel</h1>
+          <p class="text-xs text-slate-400 dark:text-slate-500">Canon GX7050</p>
+        </div>
+      </div>
+      <button id="toggleTheme" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" title="Toggle theme">
+        <i id="themeIcon" class="fa-solid fa-sun text-amber-400 text-lg"></i>
       </button>
     </div>
+  </header>
 
-    <div id="alerts"></div>
+  <!-- Alerts -->
+  <div id="alerts" class="max-w-5xl mx-auto w-full px-6 pt-4 space-y-2"></div>
 
-    <section class="mb-5">
-      <h3>Device Information</h3>
-      <table class="table table-bordered">
-        <tbody id="deviceInfoTableBody"></tbody>
-      </table>
-    </section>
+  <main class="max-w-5xl mx-auto w-full px-6 py-6 flex-1 space-y-6">
 
-    <section class="mb-5">
-      <h3>Cronjob Description</h3>
-      <pre class="console-box" id="cronDescription">{{ cronjob_description }}</pre>
-    </section>
-
-    <section class="mb-5">
-      <h3>Quick Actions</h3>
-      <div class="d-flex gap-3 flex-wrap">
-        <button id="colorPrintBtn" class="btn btn-success">
-          <i class="fa-solid fa-droplet"></i> Print Color Page
-        </button>
-        <button id="emptyPrintBtn" class="btn btn-warning">
-          <i class="fa-solid fa-file"></i> Print Empty Test Page
-        </button>
-        <button id="statusBtn" class="btn btn-info">
-          <i class="fa-solid fa-info-circle"></i> Get Printer Status
-        </button>
-      </div>
-      <pre id="printerStatus" class="status-box mt-3"></pre>
-    </section>
-
-    <section class="mb-5">
-      <h3>Ink Levels</h3>
+    <!-- Ink Levels -->
+    <section>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Ink Levels</h2>
       <div id="inkWarning"></div>
-      <div id="inkLevels" class="row gy-3"></div>
+      <div class="bg-white dark:bg-[#1e1e2e] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+        <div id="inkLevels" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <p class="text-slate-400 text-sm col-span-2">Loading ink levels...</p>
+        </div>
+      </div>
     </section>
 
-    <section class="mb-5">
-      <h3>Upload PDF</h3>
-      <form id="uploadForm" class="d-flex gap-2 align-items-center" autocomplete="off">
-        <input type="file" id="pdfFile" accept=".pdf" class="form-control" />
-        <button type="submit" class="btn btn-primary">Upload & Print</button>
-      </form>
+    <!-- Quick Actions -->
+    <section>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Quick Actions</h2>
+      <div class="bg-white dark:bg-[#1e1e2e] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 space-y-4">
+        <div class="flex flex-wrap gap-3">
+          <button id="colorPrintBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors disabled:opacity-50">
+            <i class="fa-solid fa-droplet"></i> Print Color Page
+          </button>
+          <button id="emptyPrintBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-white font-medium transition-colors disabled:opacity-50">
+            <i class="fa-solid fa-file"></i> Print Empty Test
+          </button>
+          <button id="statusBtn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium transition-colors disabled:opacity-50">
+            <i class="fa-solid fa-circle-info"></i> Printer Status
+          </button>
+        </div>
+        <pre id="printerStatus" class="hidden bg-slate-900 text-slate-100 dark:bg-slate-950 rounded-xl p-4 text-xs font-mono whitespace-pre-wrap max-h-40 overflow-y-auto"></pre>
+      </div>
     </section>
-  </div>
 
-  <footer>
-    &copy; {{ year }} Geert Meersman. Version: <a target="_blank" rel="noopener noreferrer" href="https://github.com/geertmeersman/print-color-test/releases/tag/{{ version }}">{{ version }}</a>
+    <!-- Upload PDF -->
+    <section>
+      <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Upload & Print PDF</h2>
+      <div class="bg-white dark:bg-[#1e1e2e] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+        <form id="uploadForm" class="flex flex-wrap gap-3 items-center" autocomplete="off">
+          <input type="file" id="pdfFile" accept=".pdf"
+            class="flex-1 min-w-0 text-sm text-slate-500 dark:text-slate-400
+                   file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0
+                   file:text-sm file:font-medium file:bg-blue-50 file:text-blue-600
+                   dark:file:bg-slate-700 dark:file:text-slate-200
+                   hover:file:bg-blue-100 dark:hover:file:bg-slate-600 file:transition-colors" />
+          <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors disabled:opacity-50">
+            <i class="fa-solid fa-upload"></i> Upload & Print
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Device Info + Cron side by side -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <section>
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Device Information</h2>
+        <div class="bg-white dark:bg-[#1e1e2e] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 h-full">
+          <table class="w-full text-sm">
+            <tbody id="deviceInfoTableBody" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">Scheduled Jobs</h2>
+        <div class="bg-white dark:bg-[#1e1e2e] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 h-full">
+          <pre class="bg-slate-900 text-slate-100 dark:bg-slate-950 rounded-xl p-4 text-xs font-mono whitespace-pre-wrap overflow-y-auto max-h-48" id="cronDescription">{{ cronjob_description }}</pre>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-white dark:bg-[#1e1e2e] border-t border-slate-200 dark:border-slate-700 text-center text-xs text-slate-400 dark:text-slate-500 py-4 mt-4">
+    &copy; {{ year }} Geert Meersman &nbsp;·&nbsp;
+    <a href="https://github.com/geertmeersman/print-color-test/releases/tag/{{ version }}"
+       target="_blank" rel="noopener noreferrer"
+       class="text-blue-400 hover:text-blue-500 transition-colors">{{ version }}</a>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    const alertsDiv = document.getElementById("alerts");
-
-    function showAlert(message, type = "success") {
-      const alert = document.createElement("div");
-      alert.className = `alert alert-${type} alert-dismissible fade show`;
-      alert.role = "alert";
-      alert.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-      alertsDiv.appendChild(alert);
-      setTimeout(() => {
-        alert.classList.remove("show");
-        alert.classList.add("hide");
-        setTimeout(() => alert.remove(), 500);
-      }, 5000);
+    // ── Theme ──────────────────────────────────────────────────────────────
+    function applyTheme(dark) {
+      document.documentElement.classList.toggle('dark', dark);
+      document.getElementById('themeIcon').className =
+        dark ? 'fa-solid fa-moon text-slate-300 text-lg'
+              : 'fa-solid fa-sun text-amber-400 text-lg';
     }
 
-    function setButtonsDisabled(ids, disabled) {
-      ids.forEach(id => {
+    function initTheme() {
+      const saved = localStorage.getItem('theme');
+      const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(dark);
+    }
+
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      const dark = !document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+      applyTheme(dark);
+    });
+
+    // ── Alerts ─────────────────────────────────────────────────────────────
+    function showAlert(message, type = 'success') {
+      const colors = {
+        success: 'bg-emerald-50 border-emerald-300 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-700 dark:text-emerald-300',
+        danger:  'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/30 dark:border-red-700 dark:text-red-300',
+        warning: 'bg-amber-50 border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300',
+      };
+      const el = document.createElement('div');
+      el.className = `fade-in flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-sm font-medium ${colors[type] || colors.success}`;
+      el.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 transition-opacity"><i class="fa-solid fa-xmark"></i></button>`;
+      document.getElementById('alerts').appendChild(el);
+      setTimeout(() => el.remove(), 6000);
+    }
+
+    // ── Buttons ────────────────────────────────────────────────────────────
+    const actionBtns = ['colorPrintBtn', 'emptyPrintBtn', 'statusBtn'];
+
+    function setDisabled(disabled) {
+      actionBtns.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) btn.disabled = disabled;
       });
     }
 
+    // ── Ink colors ─────────────────────────────────────────────────────────
     function getInkColor(name) {
-      const colorMap = {
-        black: "#000000",
-        cyan: "#00bcd4",
-        magenta: "#e91e63",
-        yellow: "#ffc107",
-        gray: "#9e9e9e",
-        red: "#f44336",
-        blue: "#2196f3",
-        green: "#4caf50"
+      const map = {
+        black: '#374151', cyan: '#06b6d4', magenta: '#ec4899',
+        yellow: '#eab308', gray: '#9ca3af', red: '#ef4444',
+        blue: '#3b82f6', green: '#22c55e',
       };
       const lower = name.toLowerCase();
-      for (const color in colorMap) {
-        if (lower.includes(color)) return colorMap[color];
+      for (const [key, val] of Object.entries(map)) {
+        if (lower.includes(key)) return val;
       }
-      return "#6c757d"; // default gray
+      return '#6b7280';
     }
 
-    document.getElementById("uploadForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const fileInput = document.getElementById("pdfFile");
-      if (!fileInput.files.length) {
-        showAlert("Please select a PDF file to upload.", "warning");
-        return;
-      }
-      const file = fileInput.files[0];
-      if (!file.name.toLowerCase().endsWith(".pdf")) {
-        showAlert("Only PDF files are allowed.", "warning");
-        return;
-      }
-
-      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const res = await fetch("/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        showAlert(data.message, data.success ? "success" : "danger");
-        if (data.success) fileInput.value = "";
-      } catch {
-        showAlert("Error uploading file.", "danger");
-      } finally {
-        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
-      }
-    });
-
-    document.getElementById("colorPrintBtn").addEventListener("click", async () => {
-      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
-      try {
-        const res = await fetch("/print-color-page", { method: "POST" });
-        const data = await res.json();
-        showAlert(data.message, data.success ? "success" : "danger");
-      } catch {
-        showAlert("Failed to send print color job.", "danger");
-      } finally {
-        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
-      }
-    });
-
-    document.getElementById("emptyPrintBtn").addEventListener("click", async () => {
-      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
-      try {
-        const res = await fetch("/print-empty-test", { method: "POST" });
-        const data = await res.json();
-        showAlert(data.message, data.success ? "success" : "danger");
-      } catch {
-        showAlert("Failed to send empty test page print job.", "danger");
-      } finally {
-        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
-      }
-    });
-
-    document.getElementById("statusBtn").addEventListener("click", async () => {
-      const statusPre = document.getElementById("printerStatus");
-      statusPre.textContent = "Loading...";
-      setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], true);
-      try {
-        const res = await fetch("/status");
-        const data = await res.json();
-        statusPre.textContent = data.success ? data.status : "Failed to get printer status.";
-      } catch {
-        statusPre.textContent = "Error fetching printer status.";
-      } finally {
-        setButtonsDisabled(["colorPrintBtn", "emptyPrintBtn", "statusBtn", "uploadForm"], false);
-      }
-    });
-
-    function renderDeviceInfo(deviceInfo) {
-      const container = document.getElementById("deviceInfoTableBody");
-      container.innerHTML = "";
-      Object.entries(deviceInfo).forEach(([key, value]) => {
-        if (value && value.trim() !== "") {
-          const row = document.createElement("tr");
-          row.innerHTML = `<th scope="row">${key}</th><td>${value}</td>`;
-          container.appendChild(row);
-        }
-      });
-    }
-
-    async function loadDeviceInfo() {
-      try {
-        const res = await fetch("/device-info");
-        const data = await res.json();
-        if (data.success) renderDeviceInfo(data.device_info);
-      } catch (err) {
-        console.error("Error loading device info:", err);
-      }
-    }
-
+    // ── Ink Levels ─────────────────────────────────────────────────────────
     async function loadInkLevels() {
-      const container = document.getElementById("inkLevels");
-      const warningDiv = document.getElementById("inkWarning");
-      container.innerHTML = "<p>Loading ink levels...</p>";
-      warningDiv.textContent = "";
+      const container = document.getElementById('inkLevels');
+      const warningDiv = document.getElementById('inkWarning');
+      container.innerHTML = '<p class="text-slate-400 text-sm col-span-2">Loading ink levels...</p>';
+      warningDiv.innerHTML = '';
 
       try {
-        const res = await fetch("/ink-levels");
+        const res = await fetch('/ink-levels');
         const data = await res.json();
         if (!data.success) {
-          container.innerHTML = `<p class="text-danger">Error: ${data.error || "Unknown error"}</p>`;
+          container.innerHTML = `<p class="text-red-400 text-sm col-span-2"><i class="fa-solid fa-circle-exclamation mr-1"></i>${data.error || 'Unknown error'}</p>`;
           return;
         }
 
-        container.innerHTML = "";
+        container.innerHTML = '';
         let lowInk = false;
 
         data.ink_data.forEach(({ name, level }) => {
           if (level < 20) lowInk = true;
-          const inkColor = getInkColor(name);
-          container.insertAdjacentHTML("beforeend", `
-            <div class="col-md-6 d-flex align-items-center gap-3">
-              <div class="icon" style="color: ${inkColor}">
-                <i class="fa-solid fa-droplet"></i>
+          const color = getInkColor(name);
+          const isLow = level < 20;
+          container.insertAdjacentHTML('beforeend', `
+            <div class="flex items-center gap-3">
+              <div class="w-8 flex-shrink-0 text-center" style="color:${color}">
+                <i class="fa-solid fa-droplet text-lg"></i>
               </div>
-              <div class="flex-grow-1">
-                <div class="fw-semibold d-flex align-items-center gap-2">
-                  <span style="width:12px; height:12px; border-radius:50%; background-color:${inkColor}; display:inline-block;"></span>
-                  ${name}
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium flex items-center gap-1.5">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full ring-1 ring-slate-300 dark:ring-slate-600" style="background-color:${color}"></span>
+                    ${name}
+                  </span>
+                  <span class="text-sm font-semibold ${isLow ? 'text-red-500' : 'text-slate-500 dark:text-slate-400'}">${level}%</span>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar" role="progressbar"
-                    style="width: ${level}%; background-color: ${inkColor};"
-                    aria-valuenow="${level}" aria-valuemin="0" aria-valuemax="100">
-                    ${level}%
-                  </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                  <div class="progress-bar-inner h-2.5 rounded-full" style="width:${level}%; background-color:${color};"></div>
                 </div>
               </div>
             </div>
@@ -319,45 +231,89 @@
 
         if (lowInk) {
           warningDiv.innerHTML = `
-            <div class="alert alert-warning mt-3" role="alert">
+            <div class="fade-in flex items-center gap-2 px-4 py-3 mb-3 rounded-xl border bg-amber-50 border-amber-300 text-amber-800 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300 text-sm font-medium">
               <i class="fa-solid fa-triangle-exclamation"></i> One or more ink levels are low.
-            </div>
-          `;
+            </div>`;
         }
       } catch {
-        container.innerHTML = '<p class="text-danger">Failed to fetch ink levels.</p>';
+        container.innerHTML = '<p class="text-red-400 text-sm col-span-2">Failed to fetch ink levels.</p>';
       }
     }
 
-    function loadVersion() {
-      // Placeholder: replace if needed
-    }
-
-    function applyTheme(mode) {
-      document.body.classList.remove("light-mode", "dark-mode");
-      if (mode) document.body.classList.add(`${mode}-mode`);
-    }
-
-    function initTheme() {
-      let saved = localStorage.getItem("theme");
-      if (!saved) {
-        saved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    // ── Device Info ────────────────────────────────────────────────────────
+    async function loadDeviceInfo() {
+      try {
+        const res = await fetch('/device-info');
+        const data = await res.json();
+        if (!data.success) return;
+        const tbody = document.getElementById('deviceInfoTableBody');
+        tbody.innerHTML = '';
+        Object.entries(data.device_info).forEach(([key, value]) => {
+          if (value && value.trim()) {
+            tbody.insertAdjacentHTML('beforeend', `
+              <tr>
+                <td class="py-2 pr-4 text-xs font-medium text-slate-400 dark:text-slate-500 whitespace-nowrap">${key}</td>
+                <td class="py-2 text-sm text-slate-700 dark:text-slate-300">${value}</td>
+              </tr>`);
+          }
+        });
+      } catch (err) {
+        console.error('Error loading device info:', err);
       }
-      applyTheme(saved);
     }
 
-    document.getElementById("toggleTheme").addEventListener("click", () => {
-      const current = document.body.classList.contains("dark-mode") ? "dark" : "light";
-      const next = current === "dark" ? "light" : "dark";
-      localStorage.setItem("theme", next);
-      applyTheme(next);
+    // ── Actions ────────────────────────────────────────────────────────────
+    document.getElementById('colorPrintBtn').addEventListener('click', async () => {
+      setDisabled(true);
+      try {
+        const data = await (await fetch('/print-color-page', { method: 'POST' })).json();
+        showAlert(data.message, data.success ? 'success' : 'danger');
+      } catch { showAlert('Failed to send print color job.', 'danger'); }
+      finally { setDisabled(false); }
     });
 
+    document.getElementById('emptyPrintBtn').addEventListener('click', async () => {
+      setDisabled(true);
+      try {
+        const data = await (await fetch('/print-empty-test', { method: 'POST' })).json();
+        showAlert(data.message, data.success ? 'success' : 'danger');
+      } catch { showAlert('Failed to send empty test page print job.', 'danger'); }
+      finally { setDisabled(false); }
+    });
+
+    document.getElementById('statusBtn').addEventListener('click', async () => {
+      const pre = document.getElementById('printerStatus');
+      pre.classList.remove('hidden');
+      pre.textContent = 'Loading...';
+      setDisabled(true);
+      try {
+        const data = await (await fetch('/status')).json();
+        pre.textContent = data.success ? data.status : 'Failed to get printer status.';
+      } catch { pre.textContent = 'Error fetching printer status.'; }
+      finally { setDisabled(false); }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fileInput = document.getElementById('pdfFile');
+      if (!fileInput.files.length) { showAlert('Please select a PDF file.', 'warning'); return; }
+      if (!fileInput.files[0].name.toLowerCase().endsWith('.pdf')) { showAlert('Only PDF files are allowed.', 'warning'); return; }
+      setDisabled(true);
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      try {
+        const data = await (await fetch('/upload', { method: 'POST', body: formData })).json();
+        showAlert(data.message, data.success ? 'success' : 'danger');
+        if (data.success) fileInput.value = '';
+      } catch { showAlert('Error uploading file.', 'danger'); }
+      finally { setDisabled(false); }
+    });
+
+    // ── Init ───────────────────────────────────────────────────────────────
     initTheme();
     loadDeviceInfo();
     loadInkLevels();
-    loadVersion();
-    setInterval(loadInkLevels, 300000); // every 5 mins
+    setInterval(loadInkLevels, 300000);
   </script>
 </body>
 </html>
