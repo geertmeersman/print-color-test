@@ -72,20 +72,26 @@ async def _snmp_table(oid):
     result = {}
     engine = SnmpEngine()
     transport = await UdpTransportTarget.create((PRINTER_IP, 161), timeout=1, retries=2)
-    async for errorIndication, errorStatus, errorIndex, varBinds in next_cmd(
-        engine,
-        CommunityData(SNMP_COMMUNITY, mpModel=0),
-        transport,
-        ContextData(),
-        ObjectType(ObjectIdentity(oid)),
-        lexicographicMode=False,
-    ):
-        if errorIndication or errorStatus:
+    initial_oid = oid
+    current_oid = ObjectType(ObjectIdentity(oid))
+    while True:
+        errorIndication, errorStatus, errorIndex, varBinds = await next_cmd(
+            engine,
+            CommunityData(SNMP_COMMUNITY, mpModel=0),
+            transport,
+            ContextData(),
+            current_oid,
+        )
+        if errorIndication or errorStatus or not varBinds:
             break
         for varBind in varBinds:
             oid_str = str(varBind[0])
-            index = ".".join(oid_str.split(".")[len(oid.split(".")) :])
+            if not oid_str.startswith(initial_oid):
+                engine.close_dispatcher()
+                return result
+            index = ".".join(oid_str.split(".")[len(initial_oid.split(".")) :])
             result[index] = varBind[1].prettyPrint()
+            current_oid = ObjectType(ObjectIdentity(oid_str))
     engine.close_dispatcher()
     return result
 

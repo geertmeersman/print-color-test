@@ -148,7 +148,7 @@ exec gunicorn --chdir /home/flask --bind 0.0.0.0:$WEB_PORT --worker-class eventl
 
 Screenshot
 
-![Web interface screenshot](https://github.com/geertmeersman/print-color-test/raw/main/images/web_interface.png)
+![Web interface screenshot](https://github.com/geertmeersman/print-color-test/raw/main/images/web_interface_v2.png)
 
 ---
 
