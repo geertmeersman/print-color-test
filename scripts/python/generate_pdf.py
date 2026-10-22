@@ -1,7 +1,8 @@
 from datetime import datetime
+
+from reportlab.lib.colors import CMYKColor
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from reportlab.lib.colors import CMYKColor
 
 filepath = "/home/color_test_page_dated.pdf"
 c = canvas.Canvas(filepath, pagesize=A4)
@@ -24,7 +25,6 @@ for i, (name, color) in enumerate(colors):
     y_position = margin_y + i * block_height
     c.setFillColor(color)
     c.rect(margin_x, y_position, usable_width, block_height * 0.2, fill=1)
-    
     c.setFillColorRGB(1, 1, 1)
     c.setFont("Helvetica-Bold", 14)
     c.drawString(margin_x + 10, y_position + block_height * 0.1, name)
