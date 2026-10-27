@@ -45,6 +45,7 @@ RUN chmod +x /home/describe_cron.py
 
 COPY scripts/flask/web_interface.py /home/flask/web_interface.py
 COPY scripts/flask/templates /home/flask/templates
+COPY scripts/flask/static /home/flask/static
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
