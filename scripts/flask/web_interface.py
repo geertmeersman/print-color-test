@@ -21,7 +21,7 @@ UPLOAD_FOLDER = "/tmp/uploads"
 SNMP_COMMUNITY = "public"
 BASE_OID = "1.3.6.1.2.1.43.11.1.1"
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="/home/flask/static")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default-secret")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
