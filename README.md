@@ -205,9 +205,7 @@ lp -d MyPrinter /home/color_test_page_dated.pdf  # Manual print test
 
 ## 💬 Community & Support
 
-Questions, feedback, or want to chat?
-
-📨 **Discord:** [discordapp.com/users/geertmeersman](https://discordapp.com/users/geertmeersman)
+Questions, feedback, or want to chat? Open an [issue](https://github.com/geertmeersman/print-color-test/issues) on GitHub.
 
 ---
 
