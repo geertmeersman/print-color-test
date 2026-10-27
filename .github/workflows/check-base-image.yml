@@ -18,9 +18,9 @@ jobs:
       - name: Get upstream digest and version
         id: upstream
         run: |
-          DIGEST=$(curl -s "https://hub.docker.com/v2/repositories/library/python/tags/3.13-slim" | jq -r '.digest')
+          DIGEST=$(curl -s "https://hub.docker.com/v2/repositories/library/python/tags/3.13-alpine" | jq -r '.digest')
           VERSION=$(curl -s "https://hub.docker.com/v2/repositories/library/python/tags/?name=3.13." \
-            | jq -r '.results[] | select(.name | test("^3\\.13\\.[0-9]+-slim$")) | .name' \
+            | jq -r '.results[] | select(.name | test("^3\\.13\\.[0-9]+-alpine[0-9.]+$")) | .name' \
             | sort -V | tail -1)
           echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
@@ -28,7 +28,7 @@ jobs:
       - name: Get stored digest from Dockerfile
         id: stored
         run: |
-          STORED=$(grep "^FROM python:3.13-slim@" Dockerfile | grep -oP 'sha256:[a-f0-9]+' || echo "")
+          STORED=$(grep "^FROM python:3.13-alpine@" Dockerfile | grep -oP 'sha256:[a-f0-9]+' || echo "")
           echo "digest=${STORED}" >> $GITHUB_OUTPUT
 
       - name: Compare digests
@@ -43,20 +43,21 @@ jobs:
       - name: Update Dockerfile and docs
         if: steps.compare.outputs.changed == 'true'
         run: |
-          sed -i "s|^# python:3.13-slim .*|# python:3.13-slim ${{ steps.upstream.outputs.version }}|" Dockerfile
-          sed -i "s|^FROM python:3.13-slim@.*|FROM python:3.13-slim@${{ steps.upstream.outputs.digest }}|" Dockerfile
+          sed -i "s|^# python:3.13-alpine .*|# python:3.13-alpine ${{ steps.upstream.outputs.version }}|" Dockerfile
+          sed -i "s|^FROM python:3.13-alpine@.*|FROM python:3.13-alpine@${{ steps.upstream.outputs.digest }}|" Dockerfile
           sed -i "/| Python |/s/| [^ ]* |$/| ${{ steps.upstream.outputs.version }} |/" README.md DOCKER_HUB.md
+          sed -i "s|python:3.13-alpine\` — currently pinned to \`[^\`]*\`|python:3.13-alpine\` — currently pinned to \`${{ steps.upstream.outputs.version }}\`|g" README.md DOCKER_HUB.md
 
       - name: Create PR
         if: steps.compare.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          BRANCH="fix/pin-python-3.13-slim-${{ steps.upstream.outputs.version }}"
+          BRANCH="fix/pin-python-3.13-alpine-${{ steps.upstream.outputs.version }}"
           git checkout -b "${BRANCH}"
           git add Dockerfile README.md DOCKER_HUB.md
           git diff --cached --quiet && echo "Nothing to commit" && exit 0
-          git commit -m "fix: pin python:3.13-slim to ${{ steps.upstream.outputs.version }} (${{ steps.upstream.outputs.digest }})"
+          git commit -m "fix: pin python:3.13-alpine to ${{ steps.upstream.outputs.version }} (${{ steps.upstream.outputs.digest }})"
           git push --force origin "${BRANCH}"
           EXISTING=$(curl -s \
             -H "Authorization: token ${{ secrets.GH_PAT }}" \
