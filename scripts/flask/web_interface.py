@@ -131,7 +131,8 @@ def upload():
         subprocess.run(["/usr/bin/lp", "-d", "MyPrinter", filepath], check=True, capture_output=True, text=True)
         return jsonify(success=True, message="PDF sent to printer.")
     except subprocess.CalledProcessError as e:
-        return jsonify(success=False, message=f"Failed to print PDF. Error: {e.stderr}")
+        app.logger.error("Failed to print PDF: %s", e.stderr)
+        return jsonify(success=False, message="Failed to print PDF.")
 
 
 @app.route("/print-color-page", methods=["POST"])
@@ -140,7 +141,8 @@ def print_color_page():
         subprocess.run(["/usr/local/bin/weekly_print.sh"], check=True, capture_output=True, text=True)
         return jsonify(success=True, message="Print color job sent.")
     except subprocess.CalledProcessError as e:
-        return jsonify(success=False, message=f"Failed to send print color job. Error: {e.stderr}")
+        app.logger.error("Failed to send print color job: %s", e.stderr)
+        return jsonify(success=False, message="Failed to send print color job.")
 
 
 @app.route("/print-empty-test", methods=["POST"])
@@ -149,7 +151,8 @@ def print_empty_test():
         subprocess.run(["/home/test_empty.sh"], check=True, capture_output=True, text=True)
         return jsonify(success=True, message="Empty test page print job sent.")
     except subprocess.CalledProcessError as e:
-        return jsonify(success=False, message=f"Failed to send empty test page print job. Error: {e.stderr}")
+        app.logger.error("Failed to send empty test page print job: %s", e.stderr)
+        return jsonify(success=False, message="Failed to send empty test page print job.")
 
 
 @app.route("/status")
