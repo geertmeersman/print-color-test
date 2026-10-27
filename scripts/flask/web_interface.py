@@ -172,10 +172,10 @@ def ink_levels():
         ink_data = [{"name": descriptions[i], "level": int(levels.get(i, 0))} for i in sorted(descriptions.keys())]
         return jsonify(success=True, ink_data=ink_data)
     except Exception as e:
-        return jsonify(success=False, error=str(e)), 500
+        app.logger.error("Failed to fetch ink levels: %s", e)
+        return jsonify(success=False, error="Failed to fetch ink levels."), 500
 
 
-@app.route("/device-info")
 def device_info():
     try:
         device_oids = {
@@ -191,16 +191,17 @@ def device_info():
         info = {k: get_snmp_value(v) for k, v in device_oids.items()}
         return jsonify(success=True, device_info=info)
     except Exception as e:
-        return jsonify(success=False, error=str(e)), 500
+        app.logger.error("Failed to fetch device info: %s", e)
+        return jsonify(success=False, error="Failed to fetch device info."), 500
 
 
-@app.route("/alerts")
 def alerts():
     try:
         alert_descriptions = get_snmp_table("1.3.6.1.2.1.43.16.5.1.2")
         return jsonify(success=True, alert_descriptions=list(alert_descriptions.values()))
     except Exception as e:
-        return jsonify(success=False, error=str(e)), 500
+        app.logger.error("Failed to fetch alerts: %s", e)
+        return jsonify(success=False, error="Failed to fetch alerts."), 500
 
 
 @app.route("/health")
