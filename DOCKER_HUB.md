@@ -58,7 +58,7 @@ services:
 
 ## Base image
 
-`python:3.13-alpine` — currently pinned to `3.13.17-alpine3.24`
+`python:3.13-alpine` — currently pinned to `3.13.18-alpine3.24`
 
 ## Links
 
