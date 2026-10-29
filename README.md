@@ -48,7 +48,7 @@ Ideal for inkjet printer owners who **don't print frequently** but want to **avo
 
 ## 📦 Docker Image
 
-`python:3.13-alpine` — currently pinned to `3.13.17-alpine3.24`
+`python:3.13-alpine` — currently pinned to `3.13.18-alpine3.24`
 
 You can pull the image directly from Docker Hub:
 
