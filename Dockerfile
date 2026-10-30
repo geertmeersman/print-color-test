@@ -1,5 +1,5 @@
 # python:3.13-alpine 3.13.18-alpine3.24
-FROM python:3.13-alpine@sha256:8bcfa47b04b853a17aaf909362b847b2112fd6ec4105ea553ef9a43bafbb5916
+FROM python:3.13-alpine@sha256:7984cf56ceaddebe4fefeb75d64000b9f45d8b77b11a09b24524da6cdc3af0c8
 
 ENV TZ=Europe/Brussels
 ENV DEBIAN_FRONTEND=noninteractive
